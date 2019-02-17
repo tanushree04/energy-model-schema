@@ -1,5 +1,5 @@
 # pollination OpenAPI Specification
-[![Build Status](https://travis-ci.com/pollination/api.svg?branch=master)](https://travis-ci.com/pollination/api)
+[![Build Status](https://travis-ci.org/pollination/api.svg?branch=master)](https://travis-ci.com/pollination/api)
 
 ## Links
 
