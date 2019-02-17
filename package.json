@@ -1,6 +1,6 @@
 {
   "name": "pollination",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "swagger-repo": "^2.0.0-rc.11"
   },

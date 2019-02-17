@@ -1,8 +1,7 @@
-
 apiTitle: pollination
 splitSpec: true
 codeSamples: true
 swaggerUI: false
 travis: true
-repo: pollination/schema
+repo: pollination/api
 oasVersion: 3.0.0
