@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: pollination.cloud API
+  termsOfService: 'https://pollination.cloud/terms'
+  contact:
+    email: hello@pollination.solutions
+  license:
+    name: AGPL
+    url: 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+  x-logo:
+    url: 'https://user-images.githubusercontent.com/2915573/52902747-0bfd5600-31e3-11e9-932a-00fe0f177489.png'
+  description: ''
+externalDocs:
+  description: Find out more about Pollination Cloud.
+  url: 'https://www.pollination.cloud'
+servers:
+  - url: 'http://api.pollination.cloud'
+tags:
+  - name: Sensor Grid
+    description: |
+      Sensor Grid is a collection of sensors for grid-based studies.
+  - name: Radiance Material
+    description: |
+      Radiance material definitions.
+  - name: Model
+    description: |
+      Models includes geometrical information as well as materials, constructions,
+      and boundary conditions to describe a simulation model for daylight and energy
+      and CFD modeling.
+  - name: Simulation
+    description: |
+      Simulation is a collection of commands to be applied on input models.
+  - name: Workflow
+    description: |
+      A collection of chained simulations.
+security:
+  - JWT: []
+paths: {}
+components:
+  headers:
+    ExpiresAfter:
+      description: date in UTC when token expires
+      schema:
+        type: string
+        format: date-time
+  securitySchemes:
+    JWT:
+      description: |
+        JSON Web Token (JWT).
+        Usage format: `Bearer <JWT>`
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
