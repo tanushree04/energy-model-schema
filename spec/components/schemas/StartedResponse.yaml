@@ -1,0 +1,18 @@
+type: object
+description: Successful creation of a session that will take a long time to complete.
+required:
+  - status_url
+allOf:
+  -
+    $ref: "#/components/schemas/SuccessResponse"
+  -
+    properties:
+      status_url:
+        type: string
+        description: The URL the to check the status of the running session.
+example:
+  {
+    "id": "COHdaikKLVVUFoIMSOMosOFsE",
+    "message": "The sesstion is started. Use header Retry-After to check again.",
+    "status_url": "api.pollination.cloud/COHdaikKLVVUFoIMSOMosOFsE/status"
+  }

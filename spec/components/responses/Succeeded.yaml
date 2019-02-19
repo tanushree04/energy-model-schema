@@ -1,0 +1,9 @@
+description: Successful action!
+headers:
+  Location:
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "#/components/schemas/SuccessResponse"

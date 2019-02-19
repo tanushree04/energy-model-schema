@@ -1,0 +1,9 @@
+description: A session started
+headers:
+  Retry-After:
+    schema:
+      type: integer
+content:
+  application/json:
+    schema:
+      $ref: "#/components/schemas/StartedResponse"
