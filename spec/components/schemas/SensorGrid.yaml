@@ -4,6 +4,7 @@ required:
   - type
   - sensors
   - length
+  - id
 properties:
   type:
     type: string

@@ -14,6 +14,16 @@ get:
         application/json:
           schema:
             $ref: "#/components/schemas/SensorGrid"
+          example:
+            {
+              "type": "SensorGrid",
+              "length": 2, 
+              "id": "123e4567-e89b-12d3-a456-426655441234",
+              "name": "example_grid",
+              "sensors": [
+                [0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0] 
+              ]
+            }
     401:
       $ref: "#/components/responses/Unauthorized"
     403:
