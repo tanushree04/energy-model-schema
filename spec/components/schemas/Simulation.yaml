@@ -1,0 +1,27 @@
+description: A pollination simulation job
+type: object
+required:
+ - type
+ - id
+properties:
+  type:
+    description: Simulation type.
+    type: string
+    enum: ["daylight-factor", "solar-access"]
+  id:
+    description: Simulation id assigned by server.
+    type: string
+    format: uuid
+    readOnly: true  
+  models:
+    description: A collection of model ids.
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/UUID"
+  grids:
+    description: A collection of sensor-grid ids.
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/UUID"

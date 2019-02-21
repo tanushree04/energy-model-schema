@@ -1,0 +1,47 @@
+type: object
+description: A flattened collection of sensors for grid-based studies.
+required:
+  - convert_to_meters
+  - id
+properties:
+  convert_to_meters:
+    description: |
+      Scaling factor for the vertex coordinates to be in metrics. e.g. for a model in mm
+      the value must be 0.001. 
+    type: number
+    default: 1.0
+  id:
+    description: Model id to be provided by server.
+    type: string
+    format: uuid
+    readOnly: true
+  name:
+    description: Optional name.
+    type: string
+    pattern: "^[.A-Za-z0-9_-]*$"
+  vertices:
+    description: A flattened list of unique vertices.
+    type: array
+    # uniqueItems should be true. I leave it to false for now which will allow less
+    # efficient models with duplicate vertices.
+    uniqueItems: false
+    minItems: 3
+    items:
+      type: array
+      $ref: "#/components/schemas/Vertices"
+  rad_modifiers:
+    description: |
+      A list of unique radiance modifiers. In most cases modifiers are radiance materials
+      but pollination supports other modifiers as well.
+      See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/RadianceModifier"
+  ep_constructions:
+    description: |
+      A list of unique ep_constructions for energy simulation
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/EnergyPlusConstruction"

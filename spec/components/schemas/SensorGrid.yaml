@@ -1,5 +1,5 @@
 type: object
-description: A flatten collection of sensors for grid-based studies.
+description: A flattened collection of sensors for grid-based studies.
 required:
   - type
   - sensors
@@ -22,7 +22,7 @@ properties:
     type: string
     pattern: "^[.A-Za-z0-9_-]*$"
   sensors:
-    description: Flatten array of sensors.
+    description: A flattened array of sensors.
     type: array
     items:
       type: array
