@@ -7,7 +7,7 @@ get:
   operationId: get_sensor_grids
   responses:
     200:
-      $ref: "#/components/responses/Succeeded"
+      $ref: "#/components/responses/Retrived"
     401:
       $ref: "#/components/responses/Unauthorized"
     403:
@@ -23,7 +23,7 @@ post:
     $ref: "#/components/requestBodies/SensorGrid"
   responses:
     201:
-      $ref: "#/components/responses/Succeeded"
+      $ref: "#/components/responses/Created"
     401:
       $ref: "#/components/responses/Unauthorized"
     403:

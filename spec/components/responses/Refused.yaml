@@ -1,17 +1,17 @@
-description: Resource was not found.
+description: The request is refused.
 content:
   application/json:
     schema:
       $ref: "#/components/schemas/ErrorResponse"
     example:
       {
-        "message": "Resource was not found.",
+        "message": "The request is refused.",
         "erros": [
           {
-            "code": 6,
+            "code": 2,
             "doc_url": "pollination.cloud/api/response-codes",
-            "type": "InvalidParameter",
-            "message": "The resource was not found."
+            "type": "Forbidden",
+            "message": "The resource is currently in-use and cannot be deleted."
           }
         ]
       }

@@ -1,0 +1,22 @@
+description: Retrive a list of resource ids
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        message:
+          type: string
+          description: A human readble message.
+      example:
+        {
+          "ids": [
+            "123e4567-e89b-12d3-a456-426655440000",
+            "987e4567-e89b-15t3-a456-426655440200"
+          ],
+          "message": "The resources are retrived successfuly."
+        }

@@ -1,4 +1,4 @@
-description: A session started
+description: Still in progress
 headers:
   Retry-After:
     schema:
@@ -8,16 +8,21 @@ content:
     schema:
       type: object
       required:
-        - id
+        - retry_after
         - status_url
       properties:
-        id:
-          type: string
-          description: Id of the newly created resource.
-          format: uuid
+        completion:
+          type: number
+          description: Percentage of completion
+          minimum: 0
+          maximum: 100
+        retry_after:
+          type: integer
+          description: Suggested time to retry back in seconds.
         message:
           type: string
           description: A human readble message.
+          default: In progress...
         status_url:
           type: string
           description: The URL the to check the status of the running session.
