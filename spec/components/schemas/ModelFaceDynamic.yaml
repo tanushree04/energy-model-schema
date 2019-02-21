@@ -1,0 +1,16 @@
+type: object
+description: A single planar Dynamic Face in Model
+required:
+  - states
+  - name
+properties:
+  name:
+    description: Name for this face.
+    type: string
+    pattern: "^[.A-Za-z0-9_-]*$"
+  states:
+    description: List of static models which will represent a new state for this surface. 
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/Model"

@@ -45,3 +45,9 @@ properties:
     items:
       type: array
       $ref: "#/components/schemas/EnergyPlusConstruction"
+  faces:
+    description: A list of ModelFaces.
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/ModelFace"
