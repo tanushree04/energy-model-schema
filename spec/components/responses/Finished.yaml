@@ -1,4 +1,4 @@
-description: A long session finished successfully.
+description: A long task has finished successfully.
 headers:
   Location:
     schema:

@@ -1,4 +1,4 @@
-description: A session started
+description: A task is started
 headers:
   Retry-After:
     schema:
@@ -20,10 +20,10 @@ content:
           description: A human readble message.
         status_url:
           type: string
-          description: The URL the to check the status of the running session.
+          description: The URL the to check the status of the running task.
     example:
       {
         "id": "123e4567-e89b-12d3-a456-426655440000",
-        "message": "The sesstion is started. Use status_url to monitor the progress of the run.",
+        "message": "The task is started. Use status_url to monitor the progress of the run.",
         "status_url": "api.pollination.cloud/123e4567-e89b-12d3-a456-426655440000/status"
       }
