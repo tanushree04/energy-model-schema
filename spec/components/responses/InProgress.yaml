@@ -25,7 +25,7 @@ content:
           default: In progress...
         status_url:
           type: string
-          description: The URL the to check the status of the running session.
+          description: The URL the to check the status of the running task.
     example:
       {
         "id": "123e4567-e89b-12d3-a456-426655440000",
