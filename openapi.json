@@ -52,8 +52,610 @@
       "JWT": []
     }
   ],
-  "paths": {},
+  "paths": {
+    "/sensor-grids": {
+      "get": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Retrieve a list of sensor grids",
+        "description": "Retrieve a list of sensor grids.\n",
+        "operationId": "get_sensor_grids",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Retrived"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Create a new sensor grid",
+        "description": "Create a new grid of sensors.\n",
+        "operationId": "create_sensor_grids",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SensorGrid"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          },
+          "415": {
+            "$ref": "#/components/responses/Unsupported"
+          }
+        }
+      }
+    },
+    "/sensor-grids/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/resourceId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Retrieve a sensor grid.",
+        "description": "Retrieve a sensor grid with specified identifier.  \n",
+        "operationId": "get_sensor_grid",
+        "responses": {
+          "200": {
+            "description": "Sensor Grid was retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SensorGrid"
+                },
+                "example": {
+                  "type": "SensorGrid",
+                  "length": 2,
+                  "id": "123e4567-e89b-12d3-a456-426655441234",
+                  "name": "example_grid",
+                  "sensors": [
+                    [
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1
+                    ],
+                    [
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      0
+                    ]
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Delete a sensor grid",
+        "description": "Delete a sensor grid with predefined identifier string\n",
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    }
+  },
   "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Error response schema.",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Internal code error. See pollination.cloud/api/response-codes for more information.\n"
+          },
+          "doc_url": {
+            "type": "string",
+            "description": "A URL to more information about the error code reported.",
+            "default": "pollination.cloud/api/response-codes"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Forbidden",
+              "Unauthorized",
+              "InvalidParameter",
+              "MissingParameter",
+              "RuntimeError"
+            ]
+          },
+          "param": {
+            "type": "string",
+            "description": "If the error is parameter-specific, the parameter related to the error."
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error and if you are\nlucky a helpful suggestion to address the error.\n"
+          }
+        },
+        "example": {
+          "code": 0,
+          "doc_url": "pollination.cloud/api/response-codes",
+          "type": "Unauthorized",
+          "message": "A valid token is required. Current token is expired."
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response schema.",
+        "required": [
+          "errors"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A human readble error message."
+          },
+          "errors": {
+            "type": "array",
+            "description": "Collection of errors.",
+            "items": {
+              "type": "array",
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        },
+        "example": {
+          "message": "Invalid token.",
+          "erros": [
+            {
+              "code": 0,
+              "doc_url": "pollination.cloud/api/response-codes",
+              "type": "Unauthorized",
+              "message": "A valid token is required. Current token is expired."
+            }
+          ]
+        }
+      },
+      "Sensor": {
+        "description": "A single sensor. The first 3 values indicate the locaion and the second 3 valuse indicate the direction of the sensor.",
+        "type": "array",
+        "items": {
+          "type": "number",
+          "format": "double"
+        },
+        "minItems": 6,
+        "maxItems": 6,
+        "example": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "SensorGrid": {
+        "type": "object",
+        "description": "A flattened collection of sensors for grid-based studies.",
+        "required": [
+          "type",
+          "sensors",
+          "length",
+          "id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SensorGrid"
+            ]
+          },
+          "length": {
+            "description": "Number of total sensors.",
+            "type": "integer"
+          },
+          "id": {
+            "description": "Grid id provided by server.",
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "description": "Optional name for this Grid.",
+            "type": "string",
+            "pattern": "^[.A-Za-z0-9_-]*$"
+          },
+          "sensors": {
+            "description": "A flattened array of sensors.",
+            "type": "array",
+            "items": {
+              "type": "array",
+              "$ref": "#/components/schemas/Sensor"
+            }
+          }
+        },
+        "example": {
+          "type": "SensorGrid",
+          "length": 2,
+          "name": "example_grid",
+          "sensors": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "responses": {
+      "Created": {
+        "description": "Created successfuly",
+        "headers": {
+          "Location": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Id of the newly created resource.",
+                  "format": "uuid"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message."
+                }
+              },
+              "example": {
+                "id": "123e4567-e89b-12d3-a456-426655440000",
+                "message": "The resource is created successfuly. Use header Location to access the resource."
+              }
+            }
+          }
+        }
+      },
+      "Finished": {
+        "description": "A long task has finished successfully.",
+        "headers": {
+          "Location": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Id of the newly created resource.",
+                  "format": "uuid"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message."
+                },
+                "finished_at": {
+                  "type": "string",
+                  "format": "datetime",
+                  "description": "Finished time."
+                }
+              },
+              "example": {
+                "id": "123e4567-e89b-12d3-a456-426655440000",
+                "finished_at": "Feb 19, 2019 8:35 am",
+                "message": "The sesstion is finished. Use header Location link to access the resource."
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Access forbidden.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "Permission denied.",
+              "erros": [
+                {
+                  "code": 6,
+                  "doc_url": "pollination.cloud/api/response-codes",
+                  "type": "Forbidden",
+                  "message": "Permission denied."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "InProgress": {
+        "description": "Still in progress",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "retry_after",
+                "status_url"
+              ],
+              "properties": {
+                "completion": {
+                  "type": "number",
+                  "description": "Percentage of completion",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "retry_after": {
+                  "type": "integer",
+                  "description": "Suggested time to retry back in seconds."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message.",
+                  "default": "In progress..."
+                },
+                "status_url": {
+                  "type": "string",
+                  "description": "The URL the to check the status of the running task."
+                }
+              }
+            },
+            "example": {
+              "id": "123e4567-e89b-12d3-a456-426655440000",
+              "message": "The sesstion is started. Use status_url to monitor the progress of the run.",
+              "status_url": "api.pollination.cloud/123e4567-e89b-12d3-a456-426655440000/status"
+            }
+          }
+        }
+      },
+      "Invalid": {
+        "description": "Invalid data was sent.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "Missing required paramter.",
+              "erros": [
+                {
+                  "code": 2,
+                  "doc_url": "pollination.cloud/api/response-codes",
+                  "type": "MissingParameter",
+                  "message": "Missing required paramter.",
+                  "param": "id"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource was not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "Resource was not found.",
+              "erros": [
+                {
+                  "code": 6,
+                  "doc_url": "pollination.cloud/api/response-codes",
+                  "type": "InvalidParameter",
+                  "message": "The resource was not found."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Refused": {
+        "description": "The request is refused.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "The request is refused.",
+              "erros": [
+                {
+                  "code": 2,
+                  "doc_url": "pollination.cloud/api/response-codes",
+                  "type": "Forbidden",
+                  "message": "The resource is currently in-use and cannot be deleted."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Retrived": {
+        "description": "Retrive a list of resource ids",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message."
+                }
+              },
+              "example": {
+                "ids": [
+                  "123e4567-e89b-12d3-a456-426655440000",
+                  "987e4567-e89b-15t3-a456-426655440200"
+                ],
+                "message": "The resources are retrived successfuly."
+              }
+            }
+          }
+        }
+      },
+      "Started": {
+        "description": "A task is started",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "status_url"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Id of the newly created resource.",
+                  "format": "uuid"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message."
+                },
+                "status_url": {
+                  "type": "string",
+                  "description": "The URL the to check the status of the running task."
+                }
+              }
+            },
+            "example": {
+              "id": "123e4567-e89b-12d3-a456-426655440000",
+              "message": "The task is started. Use status_url to monitor the progress of the run.",
+              "status_url": "api.pollination.cloud/123e4567-e89b-12d3-a456-426655440000/status"
+            }
+          }
+        }
+      },
+      "Succeed": {
+        "description": "Success"
+      },
+      "Unauthorized": {
+        "description": "Unauthorized.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unsupported": {
+        "description": "Unsupported media type content.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "resourceId": {
+        "name": "id",
+        "in": "path",
+        "description": "The resource identifier string",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
     "headers": {
       "ExpiresAfter": {
         "description": "date in UTC when token expires",
@@ -61,6 +663,19 @@
           "type": "string",
           "format": "date-time"
         }
+      }
+    },
+    "requestBodies": {
+      "SensorGrid": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SensorGrid"
+            }
+          }
+        },
+        "description": "SensorGrid",
+        "required": true
       }
     },
     "securitySchemes": {
