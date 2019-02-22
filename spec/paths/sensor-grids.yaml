@@ -1,0 +1,34 @@
+get:
+  tags:
+    - Sensor Grid
+  summary: Retrieve a list of sensor grids
+  description: |
+    Retrieve a list of sensor grids.
+  operationId: get_sensor_grids
+  responses:
+    200:
+      $ref: "#/components/responses/Retrived"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+post:
+  tags:
+    - Sensor Grid
+  summary: Create a new sensor grid
+  description: |
+    Create a new grid of sensors.
+  operationId: create_sensor_grids
+  requestBody:
+    $ref: "#/components/requestBodies/SensorGrid"
+  responses:
+    201:
+      $ref: "#/components/responses/Created"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+    406:
+      $ref: "#/components/responses/Invalid"
+    415:
+      $ref: "#/components/responses/Unsupported"

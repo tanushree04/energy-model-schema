@@ -1,0 +1,50 @@
+parameters:
+  - $ref: "#/components/parameters/resourceId"
+get:
+  tags:
+    - Sensor Grid
+  summary: Retrieve a sensor grid.
+  description: |
+    Retrieve a sensor grid with specified identifier.  
+  operationId: get_sensor_grid
+  responses:
+    200:
+      description: Sensor Grid was retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SensorGrid"
+          example:
+            {
+              "type": "SensorGrid",
+              "length": 2, 
+              "id": "123e4567-e89b-12d3-a456-426655441234",
+              "name": "example_grid",
+              "sensors": [
+                [0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0] 
+              ]
+            }
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+    406:
+      $ref: "#/components/responses/Invalid"
+    # add does not exist
+delete:
+  tags:
+    - Sensor Grid
+  summary: Delete a sensor grid
+  description: |
+    Delete a sensor grid with predefined identifier string
+  responses:
+    204:
+      $ref: "#/components/responses/Succeed"    
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Refused"
+    406:
+      $ref: "#/components/responses/Invalid"
+    404:
+      $ref: "#/components/responses/NotFound"

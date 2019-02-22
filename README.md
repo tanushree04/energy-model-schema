@@ -1,5 +1,5 @@
 # pollination OpenAPI Specification
-[![Build Status](https://travis-ci.org/pollination/api.svg?branch=master)](https://travis-ci.com/pollination/api)
+[![Build Status](https://travis-ci.org/pollination/api.svg?branch=master)](https://travis-ci.org/pollination/api)
 
 ## Links
 
@@ -24,4 +24,4 @@ Bundles the spec and prepares web_deploy folder with static assets.
 Validates the spec.
 
 #### `npm run gh-pages`
-Deploys docs to GitHub Pages. You don't need to run it manually if you have Travis CI configured.
+Deploys docs to GitHub Pages. You don't need to run this manually thanks to [Travis CI](https://travis-ci.org/pollination/api).

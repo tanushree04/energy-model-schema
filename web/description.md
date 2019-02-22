@@ -8,9 +8,9 @@ Welcome to Pollination Cloud API specification page!
 
 The Pollination Cloud API is a RESTful API. The requests and responses are formatted
 _closely_ according to [JSON API](https://jsonapi.org/format/1.1/) specification. In
-addition to this documentation you can download Pollination Cloud [OpenAPI specification]
-(https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md) in `yaml` or
-`JSON` format to generate client code in your preferred programming language.
+addition to this documentation you can download Pollination Cloud
+[OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md)
+in `yaml` or `JSON` format to generate client code in your preferred programming language.
 
 - [Pollination Cloud API Specification yaml](openapi.yaml)
 
