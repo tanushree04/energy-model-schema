@@ -34,7 +34,8 @@ properties:
         description: |
           A model that will be used for direct studies. This model will be used in
           solar-access studies. Direct sunlight calculation in 2-Phase (2nd phase) and
-          5-phase (5th phase). 
+          5-phase (5th phase). If you are using a BSDF material for direct studies it
+          should be a high-resolution (e.g. tensortree) BSDF. 
         type: StaticModel
       black:
         description: |
@@ -42,10 +43,10 @@ properties:
           with multiple dynamic apertures to remove the contribution of light from this
           aperture when the contribution from another aperture is being calculated.
         type: StaticModel
-      matrix:
+      tmtx:
         description: |
-          BSDF representation of the model for matrix-based calculations. This model will
-          be used in matrix multiplication.
+          Transmission matrix. A BSDF representation of the model for matrix-based
+          calculations. This model will be used in matrix multiplication.
         type: StaticModel
       inmtx:
         description: |
