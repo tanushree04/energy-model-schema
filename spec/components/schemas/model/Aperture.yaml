@@ -1,0 +1,13 @@
+description: A static Aperture Schema. Use Aperture to create Openings in Faces.
+type: object
+properties:
+  blinds:
+    description: |
+      Collection of Face or PolyFaces to represent blinds. This object should expand
+      in the future to support EnergyPlus blind types.
+    type: array
+    items:
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/Face"
+        - $ref: "#/components/schemas/PolyFace"

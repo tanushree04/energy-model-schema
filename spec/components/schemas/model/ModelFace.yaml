@@ -2,50 +2,41 @@ type: object
 description: A single planar Static Face in Model
 required:
   - vertices
-properties:
-  face_type:
-    description: |
-      Optional input for surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor,
-      3 = AirWall, 4 = Window
-    type: integer
-    minimum: 0
-    maximum: 4
-  name:
-    description: Optional name for face.
-    type: string
-    pattern: "^[.A-Za-z0-9_-]*$"
-  vertices:
-    description: |
-      A collection of integers to reference the index of vertices in
-      vertices.
-    type: array
-    items:
-      type: integer
-      minItems: 3
-    example: [0, 10, 5, 3]
-  vertices_ext:
-    description: Extended list of indexes for vertices which includes child faces like
-      windows. This list should be flattened and include the corner vertices. This is
-      also known as face profile. For radiance model vertices_ext will be checked first
-      and vertices will be used only if vertices_ext is not provided.
-    type: array
-    items:
-      type: integer
-      minItems: 8
-  rad_modifier:
-    description: |
-      Index of radiance modifier in radiance_modifiers. This modifier will be used as
-      default material for this face. See rad_modifier_direct for optional modifier for
-      direct studies. If empty the modifier will be assigned based on face type.
-    type: integer
-  rad_modifier_dir:
-    description: Index of radiance modifier for direct sunlight calculation in
-      model.rad_modifiers. Default is blacked rad_modifier.
-    type: integer
-  ep_constructions:
-    description: Index of energy construction in model.ep_constructions.
-    type: integer
-  parent:
-    description: id of parent face or parent zone.
-    type: string
-    format: uuid
+allOf:
+  - $ref: "#/components/schemas/FaceBase"
+  - properties:
+      vertices:
+        description: |
+          A collection of integers to reference the index of vertices in
+          vertices.
+        type: array
+        items:
+          type: integer
+          minItems: 3
+        example: [0, 10, 5, 3]
+      vertices_ext:
+        description: Extended list of indexes for vertices which includes child faces like
+          windows. This list should be flattened and include the corner vertices. This is
+          also known as face profile. For radiance model vertices_ext will be checked first
+          and vertices will be used only if vertices_ext is not provided.
+        type: array
+        items:
+          type: integer
+          minItems: 8
+      rad_modifier:
+        description: |
+          Index of radiance modifier in radiance_modifiers. This modifier will be used as
+          default material for this face. See rad_modifier_direct for optional modifier for
+          direct studies. If empty the modifier will be assigned based on face type.
+        type: integer
+      rad_modifier_dir:
+        description: Index of radiance modifier for direct sunlight calculation in
+          model.rad_modifiers. Default is blacked rad_modifier.
+        type: integer
+      ep_constructions:
+        description: Index of energy construction in model.ep_constructions.
+        type: integer
+      parent:
+        description: id of parent face or parent zone.
+        type: string
+        format: uuid

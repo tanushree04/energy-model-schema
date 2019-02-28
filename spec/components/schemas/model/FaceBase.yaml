@@ -1,0 +1,13 @@
+type: object
+description: Basic schema for all Face schemas.
+properties:
+  name:
+    description: Optional name for face.
+    type: string
+    pattern: "^[.A-Za-z0-9_-]*$"
+  face_type:
+    description: |
+      Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall
+    type: integer
+    minimum: 0
+    maximum: 3

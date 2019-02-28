@@ -1,0 +1,4 @@
+description: |
+  An Aperture defined based on window to wall ratio. You can use Apertures to create
+  Openings in Faces.
+type: object
