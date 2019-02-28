@@ -1,9 +1,15 @@
 type: object
-description: A flattened collection of sensors for grid-based studies.
+description: |
+  A full-fledge Pollination model. Pollination model is translatable to energy, daylight
+  and CFD models. The current version only supports daylight simulation.
 required:
+  - type
   - convert_to_meters
   - id
 properties:
+  type:
+    type: string
+    enum: ["Model"]
   convert_to_meters:
     description: |
       Scaling factor for the vertex coordinates to be in metrics. e.g. for a model in mm
@@ -29,6 +35,18 @@ properties:
     items:
       type: array
       $ref: "#/components/schemas/Vertices"
+  faces:
+    description: A list of ModelFaces.
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/ModelFace"
+  zones:
+    description: A list of Zones in this model.
+    type: array
+    items:
+      type: array
+      $ref: "#/components/schemas/Zone"
   rad_modifiers:
     description: |
       A list of unique radiance modifiers. In most cases modifiers are radiance materials
@@ -39,15 +57,9 @@ properties:
       type: array
       $ref: "#/components/schemas/RadianceModifier"
   ep_constructions:
-    description: |
+    description:
       A list of unique ep_constructions for energy simulation
     type: array
     items:
       type: array
       $ref: "#/components/schemas/EnergyPlusConstruction"
-  faces:
-    description: A list of ModelFaces.
-    type: array
-    items:
-      type: array
-      $ref: "#/components/schemas/ModelFace"
