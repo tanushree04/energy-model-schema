@@ -1,13 +1,22 @@
-description: A static Aperture Schema. Use Aperture to create Openings in Faces.
 type: object
-properties:
-  blinds:
-    description: |
-      Collection of Face or PolyFaces to represent blinds. This object should expand
-      in the future to support EnergyPlus blind types.
-    type: array
-    items:
-      type: object
-      oneOf:
-        - $ref: "#/components/schemas/Face"
-        - $ref: "#/components/schemas/PolyFace"
+description: |
+  A static Aperture Schema. An aperture is the entry point of skylight or sunlight to
+  space. For dynamic apertures use DynamicAperture Schema.
+  NOTE - All EnergyPlus Extrior fenestration objects are apertures.
+allOf:
+  - $ref: "#/components/schemas/Face"
+  - properties:
+      type:
+        type: string
+        enum: ["Aperture"]
+      face_type:
+        type: integer
+        enum: [5]
+      blinds:
+        description: A collection of blind geometries for this aperture.
+        type: array
+        items:
+          type: object
+          anyOf:
+            - $ref: "#/components/schemas/Face"
+            - $ref: "#/components/schemas/PolyFace"

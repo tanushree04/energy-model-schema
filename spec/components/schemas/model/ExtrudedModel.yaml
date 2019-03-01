@@ -1,2 +1,15 @@
-description: A collection of Extruded Rooms to create a Pollination model.
 type: object
+description: A collection of Extruded Rooms to create a Pollination model.
+required:
+  - type
+allOf:
+  - $ref: "#/components/schemas/ModelBase"
+  - properties:
+      type:
+        type: string
+        enum: ["ExtrudedModel"]
+      profile:
+        description: A collection of rooms/ spaces. 
+        type: array
+        items:
+          type: object

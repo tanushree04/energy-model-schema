@@ -1,4 +1,10 @@
 description: |
-  An Aperture defined based on window to wall ratio. You can use Apertures to create
-  Openings in Faces.
+  An Aperture defined based on window to wall ratio. This aperture will be converted to
+  an Aperture schema.
 type: object
+required:
+  - wwr
+# This is a placeholder. We need to add details for properties.
+properties:
+  wwr:
+    type: integer
