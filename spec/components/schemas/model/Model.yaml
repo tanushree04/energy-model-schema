@@ -25,7 +25,11 @@ allOf:
         type: array
         items:
           type: object
-          $ref: "#/components/schemas/ModelFace"
+          anyOf:
+            - $ref: "#/components/schemas/ModelFace"
+            - $ref: "#/components/schemas/ShadeFace"
+          discriminator:
+            propertyName: type
       apertures:
         description: A list of ModelApertures.
         type: array
