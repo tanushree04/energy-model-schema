@@ -24,27 +24,42 @@ allOf:
         description: A list of ModelFaces.
         type: array
         items:
-          type: array
+          type: object
           $ref: "#/components/schemas/ModelFace"
+      apertures:
+        description: A list of ModelApertures.
+        type: array
+        items:
+          type: object
+          $ref: "#/components/schemas/ModelAperture"
+      dynamic_models:
+        # this is now an anti-pattern and works against the idea of flattened model
+        # in the future we need a specific DynamicModel that is not built as a face
+        # by face model. 
+        description: A list of DynamicModels.
+        type: array
+        items:
+          type: object
+          $ref: "#/components/schemas/DynamicModel"
       zones:
         description: A list of Zones in this model.
         type: array
         items:
-          type: array
+          type: object
           $ref: "#/components/schemas/Zone"
       rad_modifiers:
         description: |
-          A list of unique radiance modifiers. In most cases modifiers are radiance materials
-          but pollination supports other modifiers as well.
+          A list of unique radiance modifiers. In most cases modifiers are radiance
+          materials but pollination supports other modifiers as well.
           See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
         type: array
         items:
-          type: array
+          type: string
           $ref: "#/components/schemas/RadianceModifier"
       ep_constructions:
         description:
           A list of unique ep_constructions for energy simulation
         type: array
         items:
-          type: array
+          type: string
           $ref: "#/components/schemas/EnergyPlusConstruction"

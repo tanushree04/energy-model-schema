@@ -16,3 +16,5 @@ allOf:
           oneOf:
             - $ref: "#/components/schemas/Aperture"
             - $ref: "#/components/schemas/ApertureWWR"
+          discriminator:
+            propertyName: type

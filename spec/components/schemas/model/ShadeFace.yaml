@@ -1,0 +1,9 @@
+type: object
+description: A static shading geometry Schema.
+oneOf:
+  - $ref: "#/components/schemas/Face"
+  - $ref: "#/components/schemas/PolyFace"
+  - properties:
+      type:
+        type: string
+        enum: ["ShadeFace"]

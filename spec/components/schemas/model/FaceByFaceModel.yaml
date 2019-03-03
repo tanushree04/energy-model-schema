@@ -16,5 +16,6 @@ allOf:
             # most likely need to add support for Zones too!
             - $ref: "#/components/schemas/Face"
             - $ref: "#/components/schemas/PolyFace"
-            - $ref: "#/components/schemas/Aperture"
-            # add discriminator
+            - $ref: "#/components/schemas/DynamicModel"
+          discriminator:
+            propertyName: type

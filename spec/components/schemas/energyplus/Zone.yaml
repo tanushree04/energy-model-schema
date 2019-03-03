@@ -1,2 +1,2 @@
 description: Place-holder for EnergyPlus zone.
-type: string
+type: object

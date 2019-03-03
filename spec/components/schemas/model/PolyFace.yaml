@@ -13,4 +13,4 @@ allOf:
         type: array
         items:
           type: object
-          $ref: "FaceGeometry"
+          $ref: "#/components/schemas/FaceGeometry"

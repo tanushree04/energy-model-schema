@@ -25,21 +25,31 @@ properties:
         oneOf:
           - $ref: "#/components/schemas/Model"
           - $ref: "#/components/schemas/FaceByFaceModel"
+        discriminator:
+          propertyName: type
       direct:
         description: |
           A model that will be used for direct studies. This model will be used in
           solar-access studies. Direct sunlight calculation in 2-Phase (2nd phase) and
           5-phase (5th phase). If you are using a BSDF material for direct studies it
-          should be a high-resolution (e.g. tensortree) BSDF. 
+          should be a high-resolution (e.g. tensortree) BSDF.
         type: object
-        $ref: "#/components/schemas/Model"
+        oneOf:
+          - $ref: "#/components/schemas/Model"
+          - $ref: "#/components/schemas/FaceByFaceModel"
+        discriminator:
+          propertyName: type
       black:
         description: |
           Blacked out representation of this model. Blacked model will be used in studies
           with multiple dynamic apertures to remove the contribution of light from this
           aperture when the contribution from another aperture is being calculated.
         type: object
-        $ref: "#/components/schemas/Model"
+        oneOf:
+          - $ref: "#/components/schemas/Model"
+          - $ref: "#/components/schemas/FaceByFaceModel"
+        discriminator:
+          propertyName: type
       tmtx:
         description: |
           Transmission matrix. A BSDF representation of the model for matrix-based
@@ -50,11 +60,19 @@ properties:
           A glowed representation of the model for inward matrix calculations.
           In most cases inward matrix calculation is referred to as view matrix.
         type: object
-        $ref: "#/components/schemas/Model"
+        oneOf:
+          - $ref: "#/components/schemas/Model"
+          - $ref: "#/components/schemas/FaceByFaceModel"
+        discriminator:
+          propertyName: type
       outmtx:
         description: |
           The representation of the model for outwards matrix
           calculations. outwards matrix calculation in most cases are referred to as
           daylight matrix.
         type: object
-        $ref: "#/components/schemas/Model"
+        oneOf:
+          - $ref: "#/components/schemas/Model"
+          - $ref: "#/components/schemas/FaceByFaceModel"
+        discriminator:
+          propertyName: type

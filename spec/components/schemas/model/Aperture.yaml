@@ -17,6 +17,4 @@ allOf:
         type: array
         items:
           type: object
-          anyOf:
-            - $ref: "#/components/schemas/Face"
-            - $ref: "#/components/schemas/PolyFace"
+          $ref: "#/components/schemas/ShadeFace"

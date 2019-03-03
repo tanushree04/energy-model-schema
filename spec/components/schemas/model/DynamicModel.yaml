@@ -22,3 +22,9 @@ properties:
     items:
       type: array
       $ref: "#/components/schemas/ModelState"
+  schedule:
+    description: An optional schedule for states.
+    type: array
+    items:
+      description: index for state at that time-step.
+      type: integer
