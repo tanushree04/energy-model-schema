@@ -8,4 +8,5 @@ allOf:
   - properties:
       type:
         type: string
-        enum: ["Face"]
+        enum:
+          - "Face"

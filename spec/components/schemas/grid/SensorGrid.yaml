@@ -25,7 +25,6 @@ properties:
     description: A flattened array of sensors.
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/Sensor"
 example:
   {

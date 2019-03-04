@@ -1,13 +1,8 @@
 type: object
 description: Geometrical representation of a Face with no attributes.
-required:
-  - type
 allOf:
   - $ref: "#/components/schemas/FaceBase"
   - properties:
-      type:
-        type: string
-        enum: ["FaceGeometry"]
       apertures:
         description: List of apertures.
         type: array
@@ -16,5 +11,3 @@ allOf:
           oneOf:
             - $ref: "#/components/schemas/Aperture"
             - $ref: "#/components/schemas/ApertureWWR"
-          discriminator:
-            propertyName: type

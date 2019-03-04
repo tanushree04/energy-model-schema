@@ -12,9 +12,8 @@ properties:
     description: A collection of vertices.
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/Vertices"
-      minItems: 3
+    minItems: 3
     example: [[0, 0, 0], [10, 0, 0], [10, 10, 0]]  
   # face attributes
   face_type:

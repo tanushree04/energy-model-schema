@@ -3,7 +3,12 @@ description: A Dynamic Model with one or more states.
 required:
   - states
   - name
+  - type
 properties:
+  type:
+    type: string
+    enum:
+      - "DynamicModel"
   name:
     description: Name for this face.
     type: string
@@ -20,7 +25,6 @@ properties:
     description: A collection of States. 
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/ModelState"
   schedule:
     description: An optional schedule for states.

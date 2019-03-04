@@ -17,11 +17,9 @@ properties:
     description: A collection of model ids.
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/UUID"
   grids:
     description: A collection of sensor-grid ids.
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/UUID"

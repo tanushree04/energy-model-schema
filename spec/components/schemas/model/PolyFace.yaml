@@ -8,9 +8,9 @@ allOf:
   - properties:
       type:
         type: string
-        enum: ["PolyFace"]
+        enum:
+          - "PolyFace"
       faces:
         type: array
         items:
-          type: object
           $ref: "#/components/schemas/FaceGeometry"

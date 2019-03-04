@@ -16,5 +16,4 @@ allOf:
         description: A collection of blind geometries for this aperture.
         type: array
         items:
-          type: object
           $ref: "#/components/schemas/ShadeFace"

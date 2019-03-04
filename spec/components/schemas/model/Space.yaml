@@ -15,16 +15,13 @@ properties:
     description: List of vertices to define space's plan. 
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/Vertices"
     minItems: 3
   apertures:
     description: List of apertures based on WWR for each wall.
     type: array
     items:
-      type: array
       $ref: "#/components/schemas/ApertureWWR"
-      nullable: true
   extrusion:
     type: number
     minimum: 0

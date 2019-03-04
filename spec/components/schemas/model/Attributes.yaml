@@ -2,18 +2,8 @@ type: object
 description: Face attributes.
 properties:
   rad_modifier:
-    description: |
-      A radiance modifier. In most cases modifiers are radiance materials
-      but pollination supports other modifiers as well.
-      See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
-    type: string
     $ref: "#/components/schemas/RadianceModifier"
   rad_modifier_dir:
-    description: Radiance modifier for direct sunlight calculation. If not provided
-      Honeybee will use a blacked version of rad_modifier for nonaperture faces.
-    type: string
     $ref: "#/components/schemas/RadianceModifier"
   ep_construction:
-    description: Construction for energy simulation.
-    type: string
     $ref: "#/components/schemas/EnergyPlusConstruction"

@@ -3,19 +3,20 @@ description: A collection of Faces to create a Pollination model.
 required:
   - type
 allOf:
-  - $ref: "#/components/schemas/ModelBase"
-  - properties:
-      type:
-        type: string
-        enum: ["FaceByFaceModel"]
-      faces:
-        type: array
-        items:
-          type: object
-          anyOf:
-            # most likely need to add support for Zones too!
-            - $ref: "#/components/schemas/Face"
-            - $ref: "#/components/schemas/PolyFace"
-            - $ref: "#/components/schemas/DynamicModel"
-          discriminator:
-            propertyName: type
+- $ref: "#/components/schemas/ModelBase"
+- properties:
+    type:
+      type: string
+      description: Object type.
+      enum:
+        - FaceByFaceModel
+    faces:
+      type: array
+      items:
+        type: object
+        anyOf:
+          # most likely need to add support for Zones too!
+          - $ref: "#/components/schemas/Face"
+          - $ref: "#/components/schemas/PolyFace"
+          - $ref: "#/components/schemas/ShadeFace"
+          - $ref: "#/components/schemas/DynamicModel"

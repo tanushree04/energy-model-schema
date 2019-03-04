@@ -3,20 +3,20 @@ description: A collection of Extruded Rooms to create a Pollination model.
 required:
   - type
 allOf:
-  - $ref: "#/components/schemas/ModelBase"
-  - properties:
-      type:
-        type: string
-        enum: ["SpaceBySpaceModel"]
-      spaces:
-        description: A collection of spaces. 
-        type: array
-        items:
-          type: object
-          $ref: "#/components/schemas/Space"
-      shades:
-        description: A collection of shading geometries.
-        type: array
-        items:
-          type: object
-          $ref: "#/components/schemas/ShadeFace"
+- $ref: "#/components/schemas/ModelBase"
+- properties:
+    type:
+      type: string
+      description: Object type.
+      enum:
+        - SpaceBySpaceModel    
+    spaces:
+      description: A collection of spaces. 
+      type: array
+      items:
+        $ref: "#/components/schemas/Space"
+    shades:
+      description: A collection of shading geometries.
+      type: array
+      items:
+        $ref: "#/components/schemas/ShadeFace"
