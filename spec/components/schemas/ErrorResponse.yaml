@@ -10,7 +10,6 @@ properties:
     type: array
     description: Collection of errors.
     items:
-      type: array
       $ref: "#/components/schemas/Error"
 example:
   {

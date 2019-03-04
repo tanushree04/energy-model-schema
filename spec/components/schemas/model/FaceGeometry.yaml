@@ -1,0 +1,13 @@
+type: object
+description: Geometrical representation of a Face with no attributes.
+allOf:
+  - $ref: "#/components/schemas/FaceBase"
+  - properties:
+      apertures:
+        description: List of apertures.
+        type: array
+        items:
+          type: object
+          oneOf:
+            - $ref: "#/components/schemas/Aperture"
+            - $ref: "#/components/schemas/ApertureWWR"

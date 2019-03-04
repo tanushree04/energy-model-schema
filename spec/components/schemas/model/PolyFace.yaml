@@ -1,0 +1,16 @@
+type: object
+description: |
+  A collection of Faces with shared vertices and same material.
+required:
+  - type
+allOf:
+  - $ref: "#/components/schemas/Attributes"
+  - properties:
+      type:
+        type: string
+        enum:
+          - "PolyFace"
+      faces:
+        type: array
+        items:
+          $ref: "#/components/schemas/FaceGeometry"

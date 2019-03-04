@@ -1,0 +1,5 @@
+description: |
+  A radiance modifier. In most cases modifiers are radiance materials
+  but pollination supports other modifiers as well.
+  See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
+type: string
