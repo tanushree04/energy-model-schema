@@ -9,7 +9,7 @@ info:
     name: AGPL
     url: 'https://www.gnu.org/licenses/agpl-3.0.en.html'
   x-logo:
-    url: 'https://user-images.githubusercontent.com/2915573/52902747-0bfd5600-31e3-11e9-932a-00fe0f177489.png'
+    url: 'https://user-images.githubusercontent.com/2915573/53690998-7239bb00-3d43-11e9-85b1-d9ac9d140c0f.png'
   description: ''
 externalDocs:
   description: Find out more about Pollination Cloud.
@@ -132,6 +132,12 @@ paths:
           $ref: '#/components/responses/Invalid'
 components:
   schemas:
+    EnergyPlusConstruction:
+      description: Place-holder for EnergyPlus constructions.
+      type: string
+    Zone:
+      description: Place-holder for EnergyPlus zone.
+      type: object
     Error:
       type: object
       description: Error response schema.
@@ -180,7 +186,6 @@ components:
           type: array
           description: Collection of errors.
           items:
-            type: array
             $ref: '#/components/schemas/Error'
       example:
         message: Invalid token.
@@ -233,7 +238,6 @@ components:
           description: A flattened array of sensors.
           type: array
           items:
-            type: array
             $ref: '#/components/schemas/Sensor'
       example:
         type: SensorGrid
@@ -252,6 +256,567 @@ components:
             - 0
             - 1
             - 0
+    Aperture:
+      type: object
+      description: |
+        A static Aperture Schema. An aperture is the entry point of skylight or sunlight to
+        space. For dynamic apertures use DynamicAperture Schema.
+        NOTE - All EnergyPlus Extrior fenestration objects are apertures.
+      allOf:
+        - $ref: '#/components/schemas/Face'
+        - properties:
+            type:
+              type: string
+              enum:
+                - Aperture
+            face_type:
+              type: integer
+              enum:
+                - 5
+            blinds:
+              description: A collection of blind geometries for this aperture.
+              type: array
+              items:
+                $ref: '#/components/schemas/ShadeFace'
+    Apertures:
+      type: object
+      description: |
+        An array of static Apertures. This is useful to add multiple Aperture to a single Face.
+      properties:
+        type:
+          type: string
+          enum:
+            - Apertures
+        apertures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Aperture'
+    ApertureWWR:
+      description: |
+        An Aperture defined based on window to wall ratio. This aperture will be converted to
+        an Aperture schema.
+      type: object
+      required:
+        - wwr
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - ApertureWWR
+        wwr:
+          type: number
+          minimum: 0
+          maximum: 99
+          default: 0
+    Attributes:
+      type: object
+      description: Face attributes.
+      properties:
+        rad_modifier:
+          $ref: '#/components/schemas/RadianceModifier'
+        rad_modifier_dir:
+          $ref: '#/components/schemas/RadianceModifier'
+        ep_construction:
+          $ref: '#/components/schemas/EnergyPlusConstruction'
+    DynamicModel:
+      type: object
+      description: A Dynamic Model with one or more states.
+      required:
+        - states
+        - name
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - DynamicModel
+        name:
+          description: Name for this face.
+          type: string
+          pattern: '^[.A-Za-z0-9_-]*$'
+        is_aperture:
+          description: |
+            A boolean that indicates if this state represents an aperture in building. An
+            aperture can see the source of light (sky or sun) directly. For interior windows
+            this value will be False. Non-aperture openings won't be considered as a separate
+            source of light in calculation and will be treated as go-through windows.
+          type: boolean
+          default: true
+        states:
+          description: A collection of States.
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelState'
+        schedule:
+          description: An optional schedule for states.
+          type: array
+          items:
+            description: index for state at that time-step.
+            type: integer
+    Face:
+      type: object
+      description: A single planar face
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/FaceGeometry'
+        - $ref: '#/components/schemas/Attributes'
+        - properties:
+            type:
+              type: string
+              enum:
+                - Face
+    FaceBase:
+      type: object
+      description: Basic schema for all Face schemas.
+      required:
+        - vertices
+      properties:
+        name:
+          description: Optional name for face.
+          type: string
+          pattern: '^[.A-Za-z0-9_-]*$'
+        vertices:
+          description: A collection of vertices.
+          type: array
+          items:
+            $ref: '#/components/schemas/Vertices'
+          minItems: 3
+          example:
+            - - 0
+              - 0
+              - 0
+            - - 10
+              - 0
+              - 0
+            - - 10
+              - 10
+              - 0
+        face_type:
+          description: |
+            Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall
+          type: integer
+          minimum: 0
+          maximum: 3
+        parent:
+          description: id of parent face or parent zone.
+          type: string
+          format: uuid
+    FaceByFaceModel:
+      type: object
+      description: A collection of Faces to create a Pollination model.
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+        - properties:
+            type:
+              type: string
+              description: Object type.
+              enum:
+                - FaceByFaceModel
+            faces:
+              type: array
+              items:
+                type: object
+                anyOf:
+                  - $ref: '#/components/schemas/Face'
+                  - $ref: '#/components/schemas/PolyFace'
+                  - $ref: '#/components/schemas/ShadeFace'
+                  - $ref: '#/components/schemas/DynamicModel'
+    FaceGeometry:
+      type: object
+      description: Geometrical representation of a Face with no attributes.
+      allOf:
+        - $ref: '#/components/schemas/FaceBase'
+        - properties:
+            apertures:
+              description: List of apertures.
+              type: array
+              items:
+                type: object
+                oneOf:
+                  - $ref: '#/components/schemas/Aperture'
+                  - $ref: '#/components/schemas/ApertureWWR'
+    Model:
+      type: object
+      description: |
+        A full-fledge Pollination model. Pollination model is translatable to energy, daylight
+        and CFD models. The current version only supports daylight simulation.
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+        - properties:
+            type:
+              type: string
+              description: Object type.
+              enum:
+                - Model
+            vertices:
+              description: A flattened list of unique vertices.
+              type: array
+              uniqueItems: false
+              minItems: 3
+              items:
+                $ref: '#/components/schemas/Vertices'
+            faces:
+              description: A list of ModelFaces.
+              type: array
+              items:
+                type: object
+                anyOf:
+                  - $ref: '#/components/schemas/ModelFace'
+                  - $ref: '#/components/schemas/ShadeFace'
+            apertures:
+              description: A list of ModelApertures.
+              type: array
+              items:
+                $ref: '#/components/schemas/ModelAperture'
+            dynamic_models:
+              description: A list of DynamicModels.
+              type: array
+              items:
+                $ref: '#/components/schemas/DynamicModel'
+            zones:
+              description: A list of Zones in this model.
+              type: array
+              items:
+                $ref: '#/components/schemas/Zone'
+            rad_modifiers:
+              description: |
+                A list of unique radiance modifiers. In most cases modifiers are radiance
+                materials but pollination supports other modifiers as well.
+                See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
+              type: array
+              items:
+                $ref: '#/components/schemas/RadianceModifier'
+            ep_constructions:
+              description: A list of unique ep_constructions for energy simulation
+              type: array
+              items:
+                $ref: '#/components/schemas/EnergyPlusConstruction'
+    ModelAperture:
+      type: object
+      description: A single planar Static Aperture Face in Model
+      allOf:
+        - $ref: '#/components/schemas/ModelFaceBase'
+        - properties:
+            type:
+              type: string
+              enum:
+                - ModelAperture
+            face_type:
+              type: integer
+              enum:
+                - 5
+            is_aperture:
+              type: boolean
+              enum:
+                - true
+    ModelBase:
+      type: object
+      description: Shared properties for Pollination models.
+      required:
+        - convert_to_meters
+        - id
+      properties:
+        convert_to_meters:
+          description: |
+            Scaling factor for the vertex coordinates to be in metrics. e.g. for a model in mm
+            the value must be 0.001. 
+          type: number
+          default: 1
+        id:
+          description: Model id to be provided by server.
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          description: Optional name.
+          type: string
+          pattern: '^[.A-Za-z0-9_-]*$'
+    ModelFace:
+      type: object
+      description: A single planar Static Face in Model
+      allOf:
+        - $ref: '#/components/schemas/ModelFaceBase'
+        - properties:
+            type:
+              type: string
+              enum:
+                - ModelFace
+            vertices_ext:
+              description: Extended list of indexes for vertices which includes child faces like windows. This list should be flattened and include the corner vertices. This is also known as face profile. For radiance model vertices_ext will be checked first and vertices will be used only if vertices_ext is not provided.
+              type: array
+              items:
+                type: integer
+                minItems: 8
+            is_aperture:
+              type: boolean
+              enum:
+                - false
+    ModelFaceBase:
+      type: object
+      description: A single planar Static Face in Model
+      required:
+        - vertices
+        - is_aperture
+      properties:
+        type:
+          type: string
+          enum:
+            - ModelFaceBase
+        name:
+          description: Optional name for face.
+          type: string
+          pattern: '^[.A-Za-z0-9_-]*$'
+        vertices:
+          description: |
+            A collection of integers to reference the index of vertices in
+            vertices.
+          type: array
+          items:
+            type: integer
+          minItems: 3
+          example:
+            - 0
+            - 10
+            - 5
+            - 3
+        face_type:
+          description: |
+            Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall
+          type: integer
+          minimum: 0
+          maximum: 3
+        parent:
+          description: id of parent face or parent zone.
+          type: string
+          format: uuid
+        rad_modifier:
+          description: |
+            Index of radiance modifier in radiance_modifiers. This modifier will be used as
+            default material for this face. See rad_modifier_direct for optional modifier for
+            direct studies. If empty the modifier will be assigned based on face type.
+          type: integer
+        rad_modifier_dir:
+          description: Index of radiance modifier for direct sunlight calculation in model.rad_modifiers. Default is blacked rad_modifier.
+          type: integer
+        ep_construction:
+          description: Index of energy construction in model.ep_constructions.
+          type: integer
+        is_aperture:
+          description: |
+            A boolean that indicates if this Face is an aperture. An
+            aperture can see the source of light (sky or sun) directly.
+            For interior windows this value will be False. Non-aperture openings won't be
+            considered as a separate source of light in calculation and will be treated
+            as go-through windows.
+          type: boolean
+    ModelState:
+      description: |
+        State for a dynamic model. Most of the time a dynamic model is an apertures (window
+        group).
+      type: object
+      required:
+        - count
+        - models
+      properties:
+        name:
+          description: A unique name for this state.
+          type: string
+        count:
+          description: The count for this state.
+          type: integer
+          minimum: 0
+        models:
+          type: object
+          required:
+            - default
+          properties:
+            default:
+              description: |
+                Default model to be used for normal raytracing recipes.
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Model'
+                - $ref: '#/components/schemas/FaceByFaceModel'
+            direct:
+              description: |
+                A model that will be used for direct studies. This model will be used in
+                solar-access studies. Direct sunlight calculation in 2-Phase (2nd phase) and
+                5-phase (5th phase). If you are using a BSDF material for direct studies it
+                should be a high-resolution (e.g. tensortree) BSDF.
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Model'
+                - $ref: '#/components/schemas/FaceByFaceModel'
+            black:
+              description: |
+                Blacked out representation of this model. Blacked model will be used in studies
+                with multiple dynamic apertures to remove the contribution of light from this
+                aperture when the contribution from another aperture is being calculated.
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Model'
+                - $ref: '#/components/schemas/FaceByFaceModel'
+            tmtx:
+              description: |
+                Transmission matrix. A BSDF representation of the model for matrix-based
+                calculations. This model will be used in matrix multiplication.
+              type: string
+            inmtx:
+              description: |
+                A glowed representation of the model for inward matrix calculations.
+                In most cases inward matrix calculation is referred to as view matrix.
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Model'
+                - $ref: '#/components/schemas/FaceByFaceModel'
+            outmtx:
+              description: |
+                The representation of the model for outwards matrix
+                calculations. outwards matrix calculation in most cases are referred to as
+                daylight matrix.
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Model'
+                - $ref: '#/components/schemas/FaceByFaceModel'
+    PolyFace:
+      type: object
+      description: |
+        A collection of Faces with shared vertices and same material.
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/Attributes'
+        - properties:
+            type:
+              type: string
+              enum:
+                - PolyFace
+            faces:
+              type: array
+              items:
+                $ref: '#/components/schemas/FaceGeometry'
+    ShadeFace:
+      type: object
+      description: A static shading geometry Schema.
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/Face'
+        - properties:
+            type:
+              type: string
+              enum:
+                - ShadeFace
+    Space:
+      type: object
+      description: |
+        An extruded closed Space. Use Room to create "SpaceBySpaceModel"s.
+        This is enough for now but in the future we need to have FaceByFaceSpaces which is
+        easier to use for energy models. 
+      required:
+        - type
+        - profile
+        - extrusion
+      properties:
+        type:
+          type: string
+          enum:
+            - Space
+        profile:
+          description: List of vertices to define space's plan.
+          type: array
+          items:
+            $ref: '#/components/schemas/Vertices'
+          minItems: 3
+        apertures:
+          description: List of apertures based on WWR for each wall.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApertureWWR'
+        extrusion:
+          type: number
+          minimum: 0
+          exclusiveMinimum: false
+    SpaceBySpaceModel:
+      type: object
+      description: A collection of Extruded Rooms to create a Pollination model.
+      required:
+        - type
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+        - properties:
+            type:
+              type: string
+              description: Object type.
+              enum:
+                - SpaceBySpaceModel
+            spaces:
+              description: A collection of spaces.
+              type: array
+              items:
+                $ref: '#/components/schemas/Space'
+            shades:
+              description: A collection of shading geometries.
+              type: array
+              items:
+                $ref: '#/components/schemas/ShadeFace'
+    Vertices:
+      description: 'A single vertice as x, y, z.'
+      type: array
+      items:
+        type: number
+        format: double
+      minItems: 3
+      maxItems: 3
+      example:
+        - 0
+        - 0
+        - 0
+    RadianceModifier:
+      description: |
+        A radiance modifier. In most cases modifiers are radiance materials
+        but pollination supports other modifiers as well.
+        See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
+      type: string
+    Simulation:
+      description: A pollination simulation job
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          description: Simulation type.
+          type: string
+          enum:
+            - daylight-factor
+            - solar-access
+        id:
+          description: Simulation id assigned by server.
+          type: string
+          format: uuid
+          readOnly: true
+        models:
+          description: A collection of model ids.
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        grids:
+          description: A collection of sensor-grid ids.
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+    UUID:
+      description: A resource identifier string
+      type: string
+      format: uuid
+      example: 123e4567-e89b-12d3-a456-426655440000
   responses:
     Created:
       description: Created successfuly
@@ -464,6 +1029,16 @@ components:
         type: string
         format: date-time
   requestBodies:
+    Model:
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Model'
+              - $ref: '#/components/schemas/SpaceBySpaceModel'
+              - $ref: '#/components/schemas/FaceByFaceModel'
+      description: Pollination Model
+      required: true
     SensorGrid:
       content:
         application/json:
