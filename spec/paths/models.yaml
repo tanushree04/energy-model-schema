@@ -22,8 +22,8 @@ post:
   requestBody:
     $ref: "#/components/requestBodies/Model"
   responses:
-    201:
-      $ref: "#/components/responses/Created"
+    202:
+      $ref: "#/components/responses/Started"
     401:
       $ref: "#/components/responses/Unauthorized"
     403:

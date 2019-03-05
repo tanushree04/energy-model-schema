@@ -1,0 +1,46 @@
+parameters:
+  - $ref: "#/components/parameters/resourceId"
+get:
+  tags:
+    - Model
+  summary: Retrieve a model.
+  description: Retrieve a model with specified identifier.
+  operationId: get_model
+  responses:
+    200:
+      description: model was retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: "#/components/schemas/ModelBase"
+            - properties:
+                faces:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/FaceFlattened"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+    404:
+      $ref: "#/components/responses/NotFound"
+    406:
+      $ref: "#/components/responses/Invalid"
+delete:
+  tags:
+    - Model
+  summary: Delete a model
+  description: Delete a model with predefined identifier string
+  responses:
+    204:
+      $ref: "#/components/responses/Succeed"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Refused"
+    404:
+      $ref: "#/components/responses/NotFound"
+    406:
+      $ref: "#/components/responses/Invalid"

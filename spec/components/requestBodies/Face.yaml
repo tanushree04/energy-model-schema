@@ -1,0 +1,9 @@
+content:
+  application/json:
+    schema:
+      oneOf:
+        - $ref: "#/components/schemas/ModelFace"
+        - $ref: "#/components/schemas/Face"
+        - $ref: "#/components/schemas/ShadeFace"
+description: Face
+required: true

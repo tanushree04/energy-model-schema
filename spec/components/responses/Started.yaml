@@ -1,4 +1,8 @@
-description: A task is started
+description: A task is started.
+  Use status_url to monitor the progress of the run.
+  The response will be 102-Processing until task is finished. After that
+  the response will be 303-See other.
+
 headers:
   Retry-After:
     schema:

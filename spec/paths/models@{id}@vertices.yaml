@@ -1,0 +1,25 @@
+parameters:
+  - $ref: "#/components/parameters/resourceId"
+get:
+  tags:
+    - Model
+  summary: Retrieve veritces of an existing model.
+  description: Retrieve veritces of an existing model.
+  operationId: get_model_vertices
+  responses:
+    200:
+      description: vertices was retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Vertices"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+    404:
+      $ref: "#/components/responses/NotFound"
+    406:
+      $ref: "#/components/responses/Invalid"

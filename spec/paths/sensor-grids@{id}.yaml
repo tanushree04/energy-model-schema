@@ -28,6 +28,8 @@ get:
       $ref: "#/components/responses/Unauthorized"
     403:
       $ref: "#/components/responses/Forbidden"
+    404:
+      $ref: "#/components/responses/NotFound"
     406:
       $ref: "#/components/responses/Invalid"
     # add does not exist
@@ -44,7 +46,7 @@ delete:
       $ref: "#/components/responses/Unauthorized"
     403:
       $ref: "#/components/responses/Refused"
-    406:
-      $ref: "#/components/responses/Invalid"
     404:
       $ref: "#/components/responses/NotFound"
+    406:
+      $ref: "#/components/responses/Invalid"

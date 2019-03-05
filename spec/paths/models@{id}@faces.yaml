@@ -1,0 +1,21 @@
+parameters:
+  - $ref: "#/components/parameters/resourceId"
+post:
+  tags:
+    - Model
+  summary: Add a new face to the model.
+  description: Add a new face to an existing model.
+  operationId: add_model_face
+  requestBody:
+    $ref: "#/components/requestBodies/Face"
+  responses:
+    202:
+      $ref: "#/components/responses/Started"
+    401:
+      $ref: "#/components/responses/Unauthorized"
+    403:
+      $ref: "#/components/responses/Forbidden"
+    406:
+      $ref: "#/components/responses/Invalid"
+    415:
+      $ref: "#/components/responses/Unsupported"
