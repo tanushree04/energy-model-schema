@@ -2,8 +2,16 @@ type: object
 description: Face attributes.
 properties:
   rad_modifier:
-    $ref: "#/components/schemas/RadianceModifier"
+    oneOf:
+      - $ref: "#/components/schemas/RadianceModifier"
+      - $ref: "#/components/schemas/Plastic"
+      - $ref: "#/components/schemas/Glass"
   rad_modifier_dir:
-    $ref: "#/components/schemas/RadianceModifier"
+    oneOf:
+      - $ref: "#/components/schemas/RadianceModifier"
+      - $ref: "#/components/schemas/Plastic"
+      - $ref: "#/components/schemas/Glass"
+      - $ref: "#/components/schemas/Opaque"
+      - $ref: "#/components/schemas/Transparent"
   ep_construction:
     $ref: "#/components/schemas/EnergyPlusConstruction"

@@ -54,7 +54,12 @@ allOf:
         See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
       type: array
       items:
-        $ref: "#/components/schemas/RadianceModifier"
+        anyOf:
+          - $ref: "#/components/schemas/RadianceModifier"
+          - $ref: "#/components/schemas/Plastic"
+          - $ref: "#/components/schemas/Glass"
+          - $ref: "#/components/schemas/Opaque"
+          - $ref: "#/components/schemas/Transparent"          
     ep_constructions:
       description:
         A list of unique ep_constructions for energy simulation

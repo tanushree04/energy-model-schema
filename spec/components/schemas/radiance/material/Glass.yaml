@@ -1,0 +1,35 @@
+type: object
+description: Radiance glass material.
+required:
+  - name
+  - r_transmittance
+  - g_transmittance
+  - b_transmittance
+properties:
+  name:
+    type: string
+    description: Material name as a string. Do not use white space and special character
+    pattern: "^[.A-Za-z0-9_-]*$"
+  r_transmittance:
+    type: number
+    description: transmittance for red. The value should be between 0 and 1.
+    minimum: 0
+    maximum: 1
+  g_transmittance:
+    type: number
+    description: transmittance for green. The value should be between 0 and 1.
+    minimum: 0
+    maximum: 1
+  b_transmittance:
+    type: number
+    description: transmittance for blue. The value should be between 0 and 1.
+    minimum: 0
+    maximum: 1
+  refraction:
+    type: number
+    description: Index of refraction. 1.52 for glass and 1.4 for ETFE
+    default: 1.52
+  modifier:
+    description: Placeholder for modifier.
+    type: string
+    default: void
