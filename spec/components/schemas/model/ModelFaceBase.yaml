@@ -20,14 +20,16 @@ properties:
     items:
       type: integer
     minItems: 3
-    example: [0, 10, 5, 3]  
+    example: [0, 10, 5, 3]
   # face attributes
   face_type:
-    description: |
-      Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall
-    type: integer
-    minimum: 0
-    maximum: 3
+    description: Surface type. Wall, RoofCeiling, Floor, AirWall
+    type: string
+    enum:
+      - Wall
+      - RoofCeiling
+      - Floor
+      - AirWall
   parent:
     description: id of parent face or parent zone.
     type: string

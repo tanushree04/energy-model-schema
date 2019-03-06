@@ -10,8 +10,9 @@ allOf:
         type: string
         enum: ["Aperture"]
       face_type:
-        type: integer
-        enum: [5]
+        type: string
+        enum:
+          - Window
       blinds:
         description: A collection of blind geometries for this aperture.
         type: array

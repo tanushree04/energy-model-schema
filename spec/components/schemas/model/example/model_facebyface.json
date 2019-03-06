@@ -4,7 +4,7 @@
     "faces": [
         {
             "name": "floor",
-            "face_type": 2,
+            "face_type": "Floor",
             "type": "Face",
             "parent": "south_room",
             "rad_modifier": {
@@ -47,7 +47,7 @@
         },
         {
             "name": "ceiling",
-            "face_type": 1,
+            "face_type": "RoofCeiling",
             "type": "Face",
             "parent": "south_room",
             "rad_modifier": {
@@ -92,7 +92,7 @@
             "name": "back_wall",
             "type": "Face",
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": {
                 "modifier": "void",
                 "type": "plastic",
@@ -135,7 +135,7 @@
             "name": "right_wall",
             "type": "Face",
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": {
                 "modifier": "void",
                 "type": "plastic",
@@ -178,7 +178,7 @@
             "name": "front_wall",
             "type": "Face",
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": {
                 "modifier": "void",
                 "type": "plastic",
@@ -221,7 +221,7 @@
             "name": "left_wall",
             "type": "Face",
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": {
                 "modifier": "void",
                 "type": "plastic",
@@ -264,7 +264,7 @@
     "apertures": [
         {
             "name": "back_glazing_0",
-            "face_type": 5,
+            "face_type": "Window",
             "type": "Aperture",
             "parent": "back_wall",
             "rad_modifier": {

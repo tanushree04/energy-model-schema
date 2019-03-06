@@ -112,7 +112,7 @@
     "faces": [
         {
             "name": "floor",
-            "face_type": 2,
+            "face_type": "Floor",
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
@@ -127,7 +127,7 @@
         },
         {
             "name": "ceiling",
-            "face_type": 1,
+            "face_type": "RoofCeiling",
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
@@ -145,7 +145,7 @@
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": 3,
             "rad_modifier_dir": 0,
             "vertices": [
@@ -173,7 +173,7 @@
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": 3,
             "rad_modifier_dir": 0,
             "vertices": [
@@ -188,7 +188,7 @@
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": 3,
             "rad_modifier_dir": 0,
             "vertices": [
@@ -203,7 +203,7 @@
             "type": "Face",
             "is_aperture": false,
             "parent": "south_room",
-            "face_type": 0,
+            "face_type": "Wall",
             "rad_modifier": 3,
             "rad_modifier_dir": 0,
             "vertices": [
@@ -217,7 +217,7 @@
     "apertures": [
         {
             "name": "back_glazing_0",
-            "face_type": 5,
+            "face_type": "Window",
             "is_aperture": true,
             "type": "Aperture",
             "parent": "back_wall",

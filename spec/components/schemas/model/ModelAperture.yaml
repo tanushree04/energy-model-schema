@@ -7,8 +7,9 @@ allOf:
         type: string
         enum: ["ModelAperture"]
       face_type:
-        type: integer
-        enum: [5]
+        type: string
+        enum:
+          - Window
       is_aperture:
         type: boolean
         enum: [true]
