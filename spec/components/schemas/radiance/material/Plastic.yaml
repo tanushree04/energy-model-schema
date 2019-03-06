@@ -1,11 +1,17 @@
 type: object
 description: Radiance opaque material.
 required:
+  - type
   - name
   - r_reflectance
   - g_reflectance
   - b_reflectance
 properties:
+  type:
+    type: string
+    description: Material type
+    enum:
+      - plastic
   name:
     type: string
     description: Material name as a string. Do not use white space and special character
