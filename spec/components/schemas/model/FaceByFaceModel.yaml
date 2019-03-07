@@ -2,6 +2,7 @@ type: object
 description: A collection of Faces to create a Pollination model.
 required:
   - type
+  - faces
 allOf:
 - $ref: "#/components/schemas/ModelBase"
 - properties:

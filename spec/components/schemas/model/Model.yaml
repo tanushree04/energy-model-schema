@@ -4,6 +4,8 @@ description: |
   and CFD models. The current version only supports daylight simulation.
 required:
   - type
+  - vertices
+  - faces
 allOf:
 - $ref: "#/components/schemas/ModelBase"
 - properties:

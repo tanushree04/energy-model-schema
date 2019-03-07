@@ -2,6 +2,7 @@ type: object
 description: A collection of Extruded Rooms to create a Pollination model.
 required:
   - type
+  - spaces
 allOf:
 - $ref: "#/components/schemas/ModelBase"
 - properties:
