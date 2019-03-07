@@ -1,15 +1,13 @@
 type: object
 description: A single planar Static Aperture Face in Model
 allOf:
-  - $ref: "#/components/schemas/ModelFaceBase"
   - properties:
       type:
         type: string
-        enum: ["ModelAperture"]
+        enum:
+          - "ModelAperture"
       face_type:
         type: string
         enum:
           - Window
-      is_aperture:
-        type: boolean
-        enum: [true]
+  - $ref: "#/components/schemas/ModelFaceBase"

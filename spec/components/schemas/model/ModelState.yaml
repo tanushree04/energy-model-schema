@@ -3,16 +3,11 @@ description: |
   group).
 type: object
 required:
-  - count
   - models
 properties:
   name:
     description: A unique name for this state.
     type: string
-  count:
-    description: The count for this state.
-    type: integer
-    minimum: 0
   models:
     type: object
     required:

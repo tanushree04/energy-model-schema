@@ -1,10 +1,11 @@
 type: object
 description: |
   A static Aperture Schema. An aperture is the entry point of skylight or sunlight to
-  space. For dynamic apertures use DynamicAperture Schema.
+  space. For dynamic apertures use DynamicModel Schema.
   NOTE - All EnergyPlus Extrior fenestration objects are apertures.
 allOf:
-  - $ref: "#/components/schemas/Face"
+  - $ref: "#/components/schemas/FaceBase"
+  - $ref: "#/components/schemas/Attributes"
   - properties:
       type:
         type: string

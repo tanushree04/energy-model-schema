@@ -4,13 +4,15 @@ description: |
 required:
   - type
 allOf:
-  - $ref: "#/components/schemas/Attributes"
   - properties:
       type:
         type: string
         enum:
           - "PolyFace"
+      id:
+        $ref: "#/components/schemas/UUID"
       faces:
         type: array
         items:
           $ref: "#/components/schemas/FaceGeometry"
+  - $ref: "#/components/schemas/Attributes"
