@@ -6,6 +6,8 @@ properties:
       - $ref: "#/components/schemas/RadianceModifier"
       - $ref: "#/components/schemas/Plastic"
       - $ref: "#/components/schemas/Glass"
+      - $ref: "#/components/schemas/Opaque"
+      - $ref: "#/components/schemas/Transparent"
   rad_modifier_dir:
     oneOf:
       - $ref: "#/components/schemas/RadianceModifier"
