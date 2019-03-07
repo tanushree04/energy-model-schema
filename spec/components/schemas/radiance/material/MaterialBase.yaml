@@ -1,0 +1,15 @@
+type: object
+description: Base schema for Radiance materials.
+required:
+  - type
+  - name
+properties:
+  type:
+    type: string
+    description: Material type
+    enum:
+      - MaterialBase
+  name:
+    type: string
+    description: Material name as a string. Do not use white space and special character
+    pattern: "^[.A-Za-z0-9_-]*$"

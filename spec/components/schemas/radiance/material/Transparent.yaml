@@ -1,21 +1,18 @@
 type: object
 description: Simplified Radiance transparent material.
 required:
-  - type
   - name
   - transmittance
-properties:
-  type:
-    type: string
-    description: Material type
-    enum:
-      - transparent  
-  name:
-    type: string
-    description: Material name as a string. Do not use white space and special character
-    pattern: "^[.A-Za-z0-9_-]*$"
-  transmittance:
-    type: number
-    description: Material transmittance. The value should be between 0 and 1.
-    minimum: 0
-    maximum: 1
+allOf:
+- $ref: "#/components/schemas/MaterialBase"
+- properties:
+    type:
+      type: string
+      description: Material type
+      enum:
+        - Transparent
+    transmittance:
+      type: number
+      description: Material transmittance. The value should be between 0 and 1.
+      minimum: 0
+      maximum: 1
