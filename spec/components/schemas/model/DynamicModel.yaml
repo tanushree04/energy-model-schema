@@ -4,11 +4,14 @@ required:
   - states
   - name
   - type
+  - is_aperture
 properties:
   type:
     type: string
     enum:
       - "DynamicModel"
+  id:
+    $ref: "#/components/schemas/UUID"  
   name:
     description: Name for this face.
     type: string

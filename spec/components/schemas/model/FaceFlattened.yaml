@@ -1,5 +1,7 @@
 type: object
-description: A single planar face
+description: |
+  A flattened definition of single planar face. There is no nested apertures in a
+  flattened face.
 required:
   - type
 allOf:

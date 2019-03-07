@@ -11,10 +11,7 @@ properties:
     type: number
     default: 1.0
   id:
-    description: Model id to be provided by server.
-    type: string
-    format: uuid
-    readOnly: true
+    $ref: "#/components/schemas/UUID"
   name:
     description: Optional name.
     type: string

@@ -3,10 +3,10 @@ description: A single planar face
 required:
   - type
 allOf:
-  - $ref: "#/components/schemas/FaceGeometry"
-  - $ref: "#/components/schemas/Attributes"
   - properties:
       type:
         type: string
         enum:
           - "Face"
+  - $ref: "#/components/schemas/FaceGeometry"
+  - $ref: "#/components/schemas/Attributes"

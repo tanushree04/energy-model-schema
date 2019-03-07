@@ -3,6 +3,8 @@ description: Basic schema for all Face schemas.
 required:
   - vertices
 properties:
+  id:
+    $ref: "#/components/schemas/UUID"
   name:
     description: Optional name for face.
     type: string

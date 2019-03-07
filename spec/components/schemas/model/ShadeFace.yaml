@@ -3,9 +3,9 @@ description: A static shading geometry Schema.
 required:
   - type
 allOf:
-- $ref: "#/components/schemas/Face"
 - properties:
     type:
       type: string
       enum:
         - "ShadeFace"
+- $ref: "#/components/schemas/Face"
