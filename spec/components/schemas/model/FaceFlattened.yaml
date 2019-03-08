@@ -20,5 +20,5 @@ allOf:
           and vertices will be used only if vertices_ext is not provided.
         type: array
         items:
-          $ref: "#/components/schemas/Vertices"
+          $ref: "#/components/schemas/Vertex"
         minItems: 8

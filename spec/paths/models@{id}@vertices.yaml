@@ -14,7 +14,7 @@ get:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/Vertices"
+              $ref: "#/components/schemas/Vertex"
     401:
       $ref: "#/components/responses/Unauthorized"
     403:
