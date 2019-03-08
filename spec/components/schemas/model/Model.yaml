@@ -22,7 +22,7 @@ allOf:
       uniqueItems: false
       minItems: 3
       items:
-        $ref: "#/components/schemas/Vertices"
+        $ref: "#/components/schemas/Vertex"
     faces:
       description: A list of ModelFaces.
       type: array
