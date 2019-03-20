@@ -1,2 +1,18 @@
-description: Place-holder for EnergyPlus constructions.
-type: string
+description: Group of objects to describe the physical properties and configuration for the building envelope and interior elements that is the walls, roofs, floors, windows and doors of the building. 
+type: object
+required: 
+ - name
+ - materials
+properties:
+  type:
+    type: string
+    enum:
+      - EnergyPlusConstruction
+  name: 
+    description: Name of the EnergyPlus construction
+    type: string
+    pattern: '^[.A-Za-z0-9_- ]*$'
+  materials:
+     - $ref: '#/components/schemas/EnergyPlusMaterial'
+  
+  

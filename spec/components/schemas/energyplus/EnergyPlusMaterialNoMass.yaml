@@ -1,0 +1,46 @@
+description: Used when only the thermal resistance (R value) of the material is known. Used for opaque construction elements.
+type: object
+required: 
+  - name
+  - R_value
+  - roughness
+properties:
+  type:
+    type: string
+    enum: 
+      - EnergyPlusMaterialNoMass
+  name: 
+   description: Name for EnergyPlus no-mass material
+    type: string
+    pattern: '^[.A-Za-z0-9_- ]*$'
+  R_value:
+    description: Used to enter the thermal resistance (R-value) of the material layer in (m2-K)/W
+    type: minimum
+    minimum: 0
+  roughness:
+    description: Relative roughness of a particular material layer 
+    type: string
+    enum: 
+     - VeryRough
+     - Rough
+     - MediumRough
+     - MediumSmooth
+     - Smooth
+     - VerySmooth
+  thermal_absorptance:
+    description:
+    type: number 
+    minimum: 0
+    maximum: 1
+    default: 0.9
+  solar_absorptance: 
+    description: 
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.7
+  visible_absorptance: 
+    description: 
+    minimum: 0
+    maximum: 1
+    default: 0.7

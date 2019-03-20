@@ -1,0 +1,66 @@
+description: Material "types" used to describe layers within opaque construction elements.
+type: object
+required:
+  - name
+  - roughness
+  - thickness 
+  - conductivity
+  - density
+  - specific_heat
+properties:
+  type:
+    type: string
+    enum: 
+      - EnergyPlusMaterial
+  name:
+    description: Name for EnergyPlus material
+    type: string
+    pattern: '^[.A-Za-z0-9_- ]*$'
+  roughness:
+    description: Relative roughness of a particular material layer 
+    type: string
+    enum: 
+     - VeryRough
+     - Rough
+     - MediumRough
+     - MediumSmooth
+     - Smooth
+     - VerySmooth 
+  thickness:
+    description: Thickness of the material layer in meters 
+    type: number
+    minimum: 0.003
+  conductivity:
+    description: Thermal conductivity of the material layer in W/(m-K)
+    type: number
+    minimum: 0
+    maximum: 5
+  density: 
+    description: Density of the material layer in kg/m3
+    type: number 
+    minimum: 0
+  specific_heat: 
+    description: Specific heat of the material layer in J/(kg-K)
+    type: number
+    minimum: 100
+  thermal_absorptance:
+    description:
+    type: number 
+    minimum: 0
+    maximum: 1
+    default: 0.9
+  solar_absorptance: 
+    description: 
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.7
+  visible_absorptance: 
+    description: 
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.7
+
+
+
