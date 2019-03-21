@@ -9,10 +9,13 @@ properties:
     enum:
       - EnergyPlusConstruction
   name: 
-    description: Name of the EnergyPlus construction
-    type: string
-    pattern: '^[.A-Za-z0-9_- ]*$'
+     - $ref: '#/components/schemas/PatternWithSpaces'
   materials:
-     - $ref: '#/components/schemas/EnergyPlusMaterial'
-  
-  
+      type: array
+      description: An array of EnergyPlus Materials
+      items: 
+        anyOf:
+         - $ref: '#/components/schemas/EnergyPlusMaterial'
+         - $ref: '#/components/schemas/EnergyPlusMaterialNoMass'
+         - $ref: '#/components/schemas/WindowMaterialSimpleGlazingSystem'
+              

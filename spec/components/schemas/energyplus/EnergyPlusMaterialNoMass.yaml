@@ -10,9 +10,7 @@ properties:
     enum: 
       - EnergyPlusMaterialNoMass
   name: 
-   description: Name for EnergyPlus no-mass material
-    type: string
-    pattern: '^[.A-Za-z0-9_- ]*$'
+     - $ref: '#/components/schemas/PatternWithSpaces'
   R_value:
     description: Used to enter the thermal resistance (R-value) of the material layer in (m2-K)/W
     type: minimum
@@ -28,19 +26,20 @@ properties:
      - Smooth
      - VerySmooth
   thermal_absorptance:
-    description:
+    description: Fraction of incident long wavelength radiation that is absorbed by the material
     type: number 
     minimum: 0
     maximum: 1
     default: 0.9
   solar_absorptance: 
-    description: 
+    description: Fraction of incident solar radiation absorbed by the material
     type: number
     minimum: 0
     maximum: 1
     default: 0.7
   visible_absorptance: 
-    description: 
+    description: Fraction of incident visisible wavelength radiation absorbed by the material
+    type: number
     minimum: 0
     maximum: 1
     default: 0.7
