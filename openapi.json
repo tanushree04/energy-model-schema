@@ -31,20 +31,16 @@
       "description": "Sensor Grid is a collection of sensors for grid-based studies.\n"
     },
     {
-      "name": "Radiance Material",
-      "description": "Radiance material definitions.\n"
-    },
-    {
       "name": "Model",
       "description": "Models includes geometrical information as well as materials, constructions,\nand boundary conditions to describe a simulation model for daylight and energy\nand CFD modeling.\n"
     },
     {
       "name": "Simulation",
-      "description": "Simulation is a collection of commands to be applied on input models.\n"
+      "description": "Simulation in Pollination is an executable recipe which has a set of predefined\ninstruction to execute specfic set of commands. In the near future all the recipes\nin Ladybug Tools plugins will be available as Pollination simulations.\n"
     },
     {
       "name": "Workflow",
-      "description": "A collection of chained simulations.\n"
+      "description": "Workflow is a collection of usually interrelated simulations. Simulations will be\nexecuted in steps or in parallel based on interdependencies between simulations.\n"
     }
   ],
   "security": [
@@ -53,17 +49,45 @@
     }
   ],
   "paths": {
-    "/sensor-grids": {
+    "/models": {
+      "post": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Create a model",
+        "description": "Create a new Pollination model.",
+        "operationId": "create_model",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Model"
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          },
+          "415": {
+            "$ref": "#/components/responses/Unsupported"
+          }
+        }
+      },
       "get": {
         "tags": [
-          "Sensor Grid"
+          "Model"
         ],
-        "summary": "Retrieve a list of sensor grids",
-        "description": "Retrieve a list of sensor grids.\n",
-        "operationId": "get_sensor_grids",
+        "summary": "Get models",
+        "description": "Retrieve a list of models.",
+        "operationId": "get_models",
         "responses": {
           "200": {
-            "$ref": "#/components/responses/Retrived"
+            "$ref": "#/components/responses/RetrivedModels"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -72,12 +96,519 @@
             "$ref": "#/components/responses/Forbidden"
           }
         }
+      }
+    },
+    "/models/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get a model",
+        "description": "Retrieve a model with specified identifier.",
+        "operationId": "get_model",
+        "responses": {
+          "102": {
+            "$ref": "#/components/responses/InProcessModel"
+          },
+          "200": {
+            "description": "Retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
       },
+      "delete": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Delete a model",
+        "description": "Delete a model with predefined identifier string",
+        "operationId": "del_model",
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/models/{id}/dynamic-faces": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get dynamic faces",
+        "description": "Retrieve dynamic faces of an existing model (`#experimental`).",
+        "operationId": "get_dynamic_faces",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DynamicModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/models/{id}/faces": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get faces",
+        "description": "Retrieve faces of an existing model as ModelFaces.",
+        "operationId": "get_faces",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/ModelFace"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ModelAperture"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ModelShadeFace"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/models/{id}/logs": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get logs",
+        "description": "Retrieve logs for this model. The logs are generated during the process of input\nmodel.\n",
+        "operationId": "get_model_logs",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Log"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/models/{id}/rad-modifiers": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get radiance modifiers",
+        "description": "Retrieve radiance modifiers of an existing model.",
+        "operationId": "get_rad_modifiers",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/Plastic"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Glass"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Opaque"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Transparent"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/models/{id}/vertices": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 200
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Get veritces",
+        "description": "Retrieve veritces of an existing model.",
+        "operationId": "get_vertices",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vertex"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/sensor-grids": {
       "post": {
         "tags": [
           "Sensor Grid"
         ],
-        "summary": "Create a new sensor grid",
+        "summary": "Create a sensor grid",
         "description": "Create a new grid of sensors.\n",
         "operationId": "create_sensor_grids",
         "requestBody": {
@@ -100,52 +631,29 @@
             "$ref": "#/components/responses/Unsupported"
           }
         }
-      }
-    },
-    "/sensor-grids/{id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/resourceId"
-        }
-      ],
+      },
       "get": {
         "tags": [
           "Sensor Grid"
         ],
-        "summary": "Retrieve a sensor grid.",
-        "description": "Retrieve a sensor grid with specified identifier.  \n",
-        "operationId": "get_sensor_grid",
+        "summary": "Get sensor grids",
+        "description": "Retrieve a list of sensor grids.\n",
+        "operationId": "get_sensor_grids",
         "responses": {
           "200": {
-            "description": "Sensor Grid was retrieved successfully",
+            "description": "Retrived",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SensorGrid"
-                },
-                "example": {
-                  "type": "SensorGrid",
-                  "length": 2,
-                  "id": "123e4567-e89b-12d3-a456-426655441234",
-                  "name": "example_grid",
-                  "sensors": [
-                    [
-                      0,
-                      0,
-                      0,
-                      0,
-                      0,
-                      1
-                    ],
-                    [
-                      0,
-                      0,
-                      0,
-                      0,
-                      1,
-                      0
-                    ]
-                  ]
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkedSensorGrid"
+                  }
                 }
               }
             }
@@ -155,6 +663,72 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/sensor-grids/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Get a sensor grid",
+        "description": "Retrieve a sensor grid with specified identifier.\n",
+        "operationId": "get_sensor_grid",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedSensorGrid"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           },
           "406": {
             "$ref": "#/components/responses/Invalid"
@@ -185,6 +759,848 @@
           }
         }
       }
+    },
+    "/sensor-grids/{id}/sensors": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Sensor Grid"
+        ],
+        "summary": "Get sensors",
+        "description": "Retrieve list of sensors for a sensor grid. See Header Location for paging links.\n",
+        "operationId": "get_sensors",
+        "responses": {
+          "200": {
+            "description": "Retrived",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sensor"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/simulations": {
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Create a simulation",
+        "description": "Create a new Pollination simulation.",
+        "operationId": "create_simulation",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Simulation"
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          },
+          "415": {
+            "$ref": "#/components/responses/Unsupported"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get simulations",
+        "description": "Retrieve a list of simulations.",
+        "operationId": "get_simulations",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RetrivedSimulations"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/simulations/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get a simulation",
+        "description": "Retrieve a simulation with detailed information about specification and status of\nsimulation.\n",
+        "operationId": "get_simulation",
+        "responses": {
+          "102": {
+            "description": "Processing.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "default": 30
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/DaylightFactor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PointInTime"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/DaylightFactor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PointInTime"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Delete a simulation",
+        "description": "Delete a simulation and stop all the running tasks if any. For canceling a running\nsimulation you should use actions.\n",
+        "operationId": "del_simulation",
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/simulations/{id}/actions": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "put": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Control a simulation",
+        "description": "Start or stop execution of a simulation.",
+        "operationId": "control_simulation",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Action"
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/simulations/{id}/logs": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get simulation logs",
+        "description": "Retrieve logs for this simulation.",
+        "operationId": "get_simulation_logs",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Log"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/simulations/{id}/outputs": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Request simulation output",
+        "description": "Request a simulation output.",
+        "operationId": "request_simulation_output",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          },
+          "415": {
+            "$ref": "#/components/responses/Unsupported"
+          }
+        }
+      }
+    },
+    "/simulations/{id}/outputs/{output-id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "path",
+          "name": "output-id",
+          "description": "Unique id for desired output",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get simulation output",
+        "description": "Retrieve simulation output. The results will be an an array of results. The schema\nwill be different based on outputs.\n",
+        "operationId": "get_simulation_output",
+        "responses": {
+          "102": {
+            "description": "Processing",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "default": 60
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Retrived",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/workflows": {
+      "post": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Create a workflow",
+        "description": "Create a new Pollination workflow.",
+        "operationId": "create_workflow",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Workflow"
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          },
+          "415": {
+            "$ref": "#/components/responses/Unsupported"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Get workflows",
+        "description": "Retrieve a list of workflows.",
+        "operationId": "get_workflows",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RetrivedWorkflows"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/workflows/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Get a workflow",
+        "description": "Retrieve a workflow with detailed information about specification and status of\nworkflow.\n",
+        "operationId": "get_workflow",
+        "responses": {
+          "200": {
+            "description": "Retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Delete a workflow",
+        "description": "Delete a workflow and stop all the running tasks if any. For canceling a running\nworkflow you should use actions.\n",
+        "operationId": "del_workflow",
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/workflows/{id}/actions": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "put": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Control a workflow",
+        "description": "Start or stop execution of a workflow. The action will be applied to all the workflow\nsimulations.\n",
+        "operationId": "control_workflow",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Action"
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/Succeed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Refused"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
+    },
+    "/workflows/{id}/logs": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "description": "Unique resource id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "description": "Number of items per page",
+          "required": false
+        }
+      ],
+      "get": {
+        "tags": [
+          "Workflow"
+        ],
+        "summary": "Get workflow logs",
+        "description": "Retrieve cumulative logs for all simulations in a workflow.",
+        "operationId": "get_workflow_logs",
+        "responses": {
+          "200": {
+            "description": "Retrieved",
+            "headers": {
+              "Link": {
+                "$ref": "#/components/headers/LinkHeader"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Log"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/Invalid"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -197,81 +1613,50 @@
         "description": "Place-holder for EnergyPlus zone.",
         "type": "object"
       },
-      "Error": {
+      "LinkedSensorGrid": {
         "type": "object",
-        "description": "Error response schema.",
+        "description": "A flattened collection of sensors for grid-based studies.",
         "required": [
-          "message"
+          "type",
+          "sensors",
+          "sensor_count",
+          "id"
         ],
         "properties": {
-          "code": {
-            "type": "integer",
-            "description": "Internal code error. See pollination.cloud/api/response-codes for more information.\n"
-          },
-          "doc_url": {
-            "type": "string",
-            "description": "A URL to more information about the error code reported.",
-            "default": "pollination.cloud/api/response-codes"
-          },
           "type": {
             "type": "string",
             "enum": [
-              "Forbidden",
-              "Unauthorized",
-              "InvalidParameter",
-              "MissingParameter",
-              "RuntimeError"
+              "SensorGrid"
             ]
           },
-          "param": {
-            "type": "string",
-            "description": "If the error is parameter-specific, the parameter related to the error."
+          "sensor_count": {
+            "description": "Number of total sensors.",
+            "type": "integer"
           },
-          "message": {
+          "id": {
+            "description": "Grid id.",
             "type": "string",
-            "description": "A human-readable message providing more details about the error and if you are\nlucky a helpful suggestion to address the error.\n"
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "sensors_url": {
+            "description": "link to sensors.",
+            "type": "string"
           }
         },
         "example": {
-          "code": 0,
-          "doc_url": "pollination.cloud/api/response-codes",
-          "type": "Unauthorized",
-          "message": "A valid token is required. Current token is expired."
-        }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "description": "Error response schema.",
-        "required": [
-          "errors"
-        ],
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "A human readble error message."
-          },
-          "errors": {
-            "type": "array",
-            "description": "Collection of errors.",
-            "items": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        },
-        "example": {
-          "message": "Invalid token.",
-          "erros": [
-            {
-              "code": 0,
-              "doc_url": "pollination.cloud/api/response-codes",
-              "type": "Unauthorized",
-              "message": "A valid token is required. Current token is expired."
-            }
-          ]
+          "type": "SensorGrid",
+          "id": "1234-567-3344-99",
+          "sensor_count": 20000,
+          "name": "example_grid",
+          "sensors_url": "api.pollination.cloud/1234-567-3344-99/sensors"
         }
       },
       "Sensor": {
-        "description": "A single sensor. The first 3 values indicate the locaion and the second 3 valuse indicate the direction of the sensor.",
+        "description": "A single sensor. The first 3 values indicate the locaion and\nthe second 3 valuse indicate the direction of the sensor.\n",
         "type": "array",
         "items": {
           "type": "number",
@@ -294,7 +1679,7 @@
         "required": [
           "type",
           "sensors",
-          "length",
+          "sensor_count",
           "id"
         ],
         "properties": {
@@ -304,20 +1689,12 @@
               "SensorGrid"
             ]
           },
-          "length": {
+          "sensor_count": {
             "description": "Number of total sensors.",
             "type": "integer"
           },
-          "id": {
-            "description": "Grid id provided by server.",
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
           "name": {
-            "description": "Optional name for this Grid.",
-            "type": "string",
-            "pattern": "^[.A-Za-z0-9_-]*$"
+            "$ref": "#/components/schemas/ValidString"
           },
           "sensors": {
             "description": "A flattened array of sensors.",
@@ -329,7 +1706,7 @@
         },
         "example": {
           "type": "SensorGrid",
-          "length": 2,
+          "sensor_count": 4,
           "name": "example_grid",
           "sensors": [
             [
@@ -347,17 +1724,35 @@
               0,
               1,
               0
+            ],
+            [
+              0,
+              1,
+              1.2,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              1.2,
+              0,
+              1,
+              0
             ]
           ]
         }
       },
       "Aperture": {
         "type": "object",
-        "description": "A static Aperture Schema. An aperture is the entry point of skylight or sunlight to\nspace. For dynamic apertures use DynamicAperture Schema.\nNOTE - All EnergyPlus Extrior fenestration objects are apertures.\n",
+        "description": "A static Aperture Schema. An aperture is the entry point of sky light or sunlight to\nspace. For dynamic apertures use DynamicModel Schema.\nNOTE: All EnergyPlus Extrior fenestration objects are apertures.\n",
+        "required": [
+          "type",
+          "face_type",
+          "parent"
+        ],
         "allOf": [
-          {
-            "$ref": "#/components/schemas/Face"
-          },
           {
             "properties": {
               "type": {
@@ -367,9 +1762,10 @@
                 ]
               },
               "face_type": {
-                "type": "integer",
+                "description": "Face type = `Window`.",
+                "type": "string",
                 "enum": [
-                  5
+                  "Window"
                 ]
               },
               "blinds": {
@@ -378,8 +1774,36 @@
                 "items": {
                   "$ref": "#/components/schemas/ShadeFace"
                 }
+              },
+              "parent": {
+                "description": "Parent Face information.",
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "face"
+                    ]
+                  }
+                }
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/FaceBase"
+          },
+          {
+            "$ref": "#/components/schemas/Attributes"
           }
         ]
       },
@@ -426,12 +1850,44 @@
       "Attributes": {
         "type": "object",
         "description": "Face attributes.",
+        "required": [
+          "name"
+        ],
         "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
           "rad_modifier": {
-            "$ref": "#/components/schemas/RadianceModifier"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Opaque"
+              },
+              {
+                "$ref": "#/components/schemas/Transparent"
+              },
+              {
+                "$ref": "#/components/schemas/Plastic"
+              },
+              {
+                "$ref": "#/components/schemas/Glass"
+              }
+            ]
           },
           "rad_modifier_dir": {
-            "$ref": "#/components/schemas/RadianceModifier"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Opaque"
+              },
+              {
+                "$ref": "#/components/schemas/Transparent"
+              },
+              {
+                "$ref": "#/components/schemas/Plastic"
+              },
+              {
+                "$ref": "#/components/schemas/Glass"
+              }
+            ]
           },
           "ep_construction": {
             "$ref": "#/components/schemas/EnergyPlusConstruction"
@@ -444,7 +1900,8 @@
         "required": [
           "states",
           "name",
-          "type"
+          "type",
+          "is_aperture"
         ],
         "properties": {
           "type": {
@@ -452,6 +1909,9 @@
             "enum": [
               "DynamicModel"
             ]
+          },
+          "id": {
+            "$ref": "#/components/schemas/UUID"
           },
           "name": {
             "description": "Name for this face.",
@@ -488,12 +1948,6 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/FaceGeometry"
-          },
-          {
-            "$ref": "#/components/schemas/Attributes"
-          },
-          {
             "properties": {
               "type": {
                 "type": "string",
@@ -502,6 +1956,12 @@
                 ]
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/FaceGeometry"
+          },
+          {
+            "$ref": "#/components/schemas/Attributes"
           }
         ]
       },
@@ -512,16 +1972,14 @@
           "vertices"
         ],
         "properties": {
-          "name": {
-            "description": "Optional name for face.",
-            "type": "string",
-            "pattern": "^[.A-Za-z0-9_-]*$"
+          "id": {
+            "$ref": "#/components/schemas/UUIDReadOnly"
           },
           "vertices": {
             "description": "A collection of vertices.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Vertices"
+              "$ref": "#/components/schemas/Vertex"
             },
             "minItems": 3,
             "example": [
@@ -543,15 +2001,36 @@
             ]
           },
           "face_type": {
-            "description": "Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall\n",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 3
+            "description": "Face type. `Wall`, `RoofCeiling`, `Floor`, `AirWall`. The type will be assigned\nbased on face normal direction if not provided. For `AirWall`s you must set the\ntype manually. For `Window` faces use `Aperture` field.\n",
+            "type": "string",
+            "enum": [
+              "Wall",
+              "RoofCeiling",
+              "Floor",
+              "AirWall"
+            ]
           },
           "parent": {
-            "description": "id of parent face or parent zone.",
-            "type": "string",
-            "format": "uuid"
+            "description": "Parent zone information.",
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "zone"
+                ]
+              }
+            }
           }
         }
       },
@@ -559,7 +2038,8 @@
         "type": "object",
         "description": "A collection of Faces to create a Pollination model.",
         "required": [
-          "type"
+          "type",
+          "faces"
         ],
         "allOf": [
           {
@@ -593,6 +2073,46 @@
                     }
                   ]
                 }
+              },
+              "zones": {
+                "description": "List of Zones in this model. Only useful for creating energy models.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Zone"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "FaceFlattened": {
+        "type": "object",
+        "description": "A flattened definition of single planar face. There is no nested apertures in a\nflattened face.\n",
+        "required": [
+          "type"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FaceBase"
+          },
+          {
+            "$ref": "#/components/schemas/Attributes"
+          },
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "FaceFlattened"
+                ]
+              },
+              "vertices_ext": {
+                "description": "Extended list of indexes for vertices which includes child faces like windows.\nThis list should be flattened and include the corner vertices. This is also\nknown as face profile. For radiance model vertices_ext will be checked first\nand vertices will be used only if vertices_ext is not provided.\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vertex"
+                },
+                "minItems": 8
               }
             }
           }
@@ -600,37 +2120,208 @@
       },
       "FaceGeometry": {
         "type": "object",
-        "description": "Geometrical representation of a Face with no attributes.",
+        "description": "Face geometry with apertures but with no attributes. This face type is useful for\ncreating PolyFaces.\n",
         "allOf": [
           {
             "$ref": "#/components/schemas/FaceBase"
           },
           {
             "properties": {
-              "apertures": {
-                "description": "List of apertures.",
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Aperture"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ApertureWWR"
-                    }
-                  ]
-                }
+              "aperture": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Aperture"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Apertures"
+                  }
+                ]
               }
             }
           }
         ]
       },
+      "InProcessModel": {
+        "type": "object",
+        "description": "Pollination model when is still being processed.",
+        "readOnly": true,
+        "properties": {
+          "convert_to_meters": {
+            "type": "number",
+            "default": 1
+          },
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "url": {
+            "description": "Link to this model (self).",
+            "type": "string",
+            "format": "url"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Submitted"
+                  ]
+                },
+                "timestamp": {
+                  "$ref": "#/components/schemas/TimeStamp"
+                }
+              }
+            }
+          },
+          "logs": {
+            "description": "Link to related logs to this model.",
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "example": {
+          "convert_to_meters": 1,
+          "name": "string",
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000",
+          "history": [
+            {
+              "status": "Submitted",
+              "timestamp": "2019-03-11T18:47:13Z"
+            }
+          ],
+          "logs": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/logs"
+        }
+      },
+      "LinkedModel": {
+        "type": "object",
+        "description": "Pollination model.",
+        "readOnly": true,
+        "properties": {
+          "convert_to_meters": {
+            "type": "number",
+            "default": 1
+          },
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "url": {
+            "description": "Link to this model (self).",
+            "type": "string",
+            "format": "url"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelEvent"
+            }
+          },
+          "logs": {
+            "description": "Link to related logs to this model.",
+            "type": "string",
+            "format": "url"
+          },
+          "vertices": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "description": "Number of vertices.",
+                "type": "integer"
+              },
+              "url": {
+                "description": "URL to access model vertices.",
+                "type": "string"
+              }
+            }
+          },
+          "rad_modifiers": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "description": "Number of modifiers.",
+                "type": "integer"
+              },
+              "url": {
+                "description": "URL to access Radiance modifiers in this model.",
+                "type": "string"
+              }
+            }
+          },
+          "faces": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "description": "Number of faces.",
+                "type": "integer"
+              },
+              "url": {
+                "description": "URL to access modelfaces in this model. ModelFaces reference\nto vertices and rad_modifiers in model.\n",
+                "type": "string"
+              }
+            }
+          },
+          "dynamic_faces": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "description": "Number of faces.",
+                "type": "integer"
+              },
+              "url": {
+                "description": "URL to access model dynamic faces.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": {
+          "convert_to_meters": 1,
+          "name": "string",
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000",
+          "history": [
+            {
+              "status": "Submitted",
+              "timestamp": "2019-03-11T18:47:13Z"
+            },
+            {
+              "status": "Created",
+              "timestamp": "2019-03-11T18:50:16Z"
+            }
+          ],
+          "logs": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/logs",
+          "vertices": {
+            "count": 200,
+            "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/vertices"
+          },
+          "rad_modifiers": {
+            "count": 13,
+            "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/rad_modifiers"
+          },
+          "faces": {
+            "count": 65,
+            "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/faces"
+          },
+          "dynamic_faces": {
+            "count": 0,
+            "url": "https://api.pollination.cloud/models/123e4567-e89b-12d3-a456-426655440000/dynamic_faces"
+          }
+        }
+      },
       "Model": {
         "type": "object",
         "description": "A full-fledge Pollination model. Pollination model is translatable to energy, daylight\nand CFD models. The current version only supports daylight simulation.\n",
         "required": [
-          "type"
+          "type",
+          "vertices",
+          "faces"
         ],
         "allOf": [
           {
@@ -646,16 +2337,16 @@
                 ]
               },
               "vertices": {
-                "description": "A flattened list of unique vertices.",
+                "description": "An ordered, flattened list of unique vertices.",
                 "type": "array",
-                "uniqueItems": false,
+                "uniqueItems": true,
                 "minItems": 3,
                 "items": {
-                  "$ref": "#/components/schemas/Vertices"
+                  "$ref": "#/components/schemas/Vertex"
                 }
               },
               "faces": {
-                "description": "A list of ModelFaces.",
+                "description": "A flattened list of ModelFaces. A ModelFace can represent an opaque face,\nan aperture or a shading face.\n",
                 "type": "array",
                 "items": {
                   "type": "object",
@@ -664,23 +2355,39 @@
                       "$ref": "#/components/schemas/ModelFace"
                     },
                     {
-                      "$ref": "#/components/schemas/ShadeFace"
+                      "$ref": "#/components/schemas/ModelAperture"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ModelShadeFace"
                     }
                   ]
                 }
               },
-              "apertures": {
-                "description": "A list of ModelApertures.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ModelAperture"
-                }
-              },
-              "dynamic_models": {
-                "description": "A list of DynamicModels.",
+              "dynamic_faces": {
+                "description": "A list of dynamic models. `#experimental`\n",
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/DynamicModel"
+                }
+              },
+              "rad_modifiers": {
+                "description": "A list of unique radiance modifiers. In most cases modifiers are radiance\nmaterials but pollination supports other modifiers as well.\nSee http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces\n",
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Opaque"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Transparent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Plastic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Glass"
+                    }
+                  ]
                 }
               },
               "zones": {
@@ -688,13 +2395,6 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/Zone"
-                }
-              },
-              "rad_modifiers": {
-                "description": "A list of unique radiance modifiers. In most cases modifiers are radiance\nmaterials but pollination supports other modifiers as well.\nSee http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces\n",
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RadianceModifier"
                 }
               },
               "ep_constructions": {
@@ -713,9 +2413,6 @@
         "description": "A single planar Static Aperture Face in Model",
         "allOf": [
           {
-            "$ref": "#/components/schemas/ModelFaceBase"
-          },
-          {
             "properties": {
               "type": {
                 "type": "string",
@@ -724,18 +2421,16 @@
                 ]
               },
               "face_type": {
-                "type": "integer",
+                "description": "Face type = `Window`.",
+                "type": "string",
                 "enum": [
-                  5
-                ]
-              },
-              "is_aperture": {
-                "type": "boolean",
-                "enum": [
-                  true
+                  "Window"
                 ]
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/ModelFaceBase"
           }
         ]
       },
@@ -744,7 +2439,8 @@
         "description": "Shared properties for Pollination models.",
         "required": [
           "convert_to_meters",
-          "id"
+          "id",
+          "name"
         ],
         "properties": {
           "convert_to_meters": {
@@ -753,15 +2449,32 @@
             "default": 1
           },
           "id": {
-            "description": "Model id to be provided by server.",
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
+            "$ref": "#/components/schemas/UUIDReadOnly"
           },
           "name": {
-            "description": "Optional name.",
+            "$ref": "#/components/schemas/ValidString"
+          }
+        }
+      },
+      "ModelEvent": {
+        "description": "Model event",
+        "type": "object",
+        "required": [
+          "status",
+          "timestamp"
+        ],
+        "properties": {
+          "status": {
+            "description": "Status of processing a model.",
             "type": "string",
-            "pattern": "^[.A-Za-z0-9_-]*$"
+            "enum": [
+              "Submitted",
+              "Created",
+              "Modified"
+            ]
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/TimeStamp"
           }
         }
       },
@@ -769,9 +2482,6 @@
         "type": "object",
         "description": "A single planar Static Face in Model",
         "allOf": [
-          {
-            "$ref": "#/components/schemas/ModelFaceBase"
-          },
           {
             "properties": {
               "type": {
@@ -781,20 +2491,17 @@
                 ]
               },
               "vertices_ext": {
-                "description": "Extended list of indexes for vertices which includes child faces like windows. This list should be flattened and include the corner vertices. This is also known as face profile. For radiance model vertices_ext will be checked first and vertices will be used only if vertices_ext is not provided.",
+                "description": "Extended list of indexes for vertices which includes child faces like\nwindows. This list should be flattened and include the corner vertices.\n`vertices_ext` will be used for _Radiance_ models. For _energy_ models see\n`vertices`.\n![profile](https://user-images.githubusercontent.com/2915573/40280635-db49dd9c-5c24-11e8-8be3-a4d3f4d95c4a.gif)\n",
                 "type": "array",
                 "items": {
                   "type": "integer",
                   "minItems": 8
                 }
-              },
-              "is_aperture": {
-                "type": "boolean",
-                "enum": [
-                  false
-                ]
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/ModelFaceBase"
           }
         ]
       },
@@ -802,20 +2509,14 @@
         "type": "object",
         "description": "A single planar Static Face in Model",
         "required": [
-          "vertices",
-          "is_aperture"
+          "vertices"
         ],
         "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "ModelFaceBase"
-            ]
+          "id": {
+            "$ref": "#/components/schemas/UUID"
           },
           "name": {
-            "description": "Optional name for face.",
-            "type": "string",
-            "pattern": "^[.A-Za-z0-9_-]*$"
+            "$ref": "#/components/schemas/ValidString"
           },
           "vertices": {
             "description": "A collection of integers to reference the index of vertices in\nvertices.\n",
@@ -832,50 +2533,91 @@
             ]
           },
           "face_type": {
-            "description": "Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall\n",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 3
+            "description": "Face type. `Wall`, `RoofCeiling`, `Floor`, `AirWall`. The type will be assigned\nbased on face normal direction if not provided. For `AirWall`s you must set the\ntype manually. For `window` see `ModelAperture`.\n",
+            "type": "string",
+            "enum": [
+              "Wall",
+              "RoofCeiling",
+              "Floor",
+              "AirWall"
+            ]
           },
           "parent": {
             "description": "id of parent face or parent zone.",
+            "type": "object",
+            "required": [
+              "name",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/UUID"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "zone",
+                  "face"
+                ]
+              }
+            }
+          },
+          "rad_modifier": {
+            "description": "UUID of radiance modifier in radiance_modifiers. This modifier will be used as\ndefault material for this face. See rad_modifier_direct for optional modifier for\ndirect studies. If empty the modifier will be assigned based on face type.\n",
             "type": "string",
             "format": "uuid"
           },
-          "rad_modifier": {
-            "description": "Index of radiance modifier in radiance_modifiers. This modifier will be used as\ndefault material for this face. See rad_modifier_direct for optional modifier for\ndirect studies. If empty the modifier will be assigned based on face type.\n",
-            "type": "integer"
-          },
           "rad_modifier_dir": {
-            "description": "Index of radiance modifier for direct sunlight calculation in model.rad_modifiers. Default is blacked rad_modifier.",
-            "type": "integer"
+            "description": "UUID of radiance modifier in radiance_modifiers. This modifier will be used for direct sunlight calculations. Default is blacked rad_modifier.",
+            "type": "string",
+            "format": "uuid"
           },
           "ep_construction": {
-            "description": "Index of energy construction in model.ep_constructions.",
-            "type": "integer"
-          },
-          "is_aperture": {
-            "description": "A boolean that indicates if this Face is an aperture. An\naperture can see the source of light (sky or sun) directly.\nFor interior windows this value will be False. Non-aperture openings won't be\nconsidered as a separate source of light in calculation and will be treated\nas go-through windows.\n",
-            "type": "boolean"
+            "description": "UUID of energy construction in model.ep_constructions.",
+            "type": "string",
+            "format": "uuid"
           }
         }
+      },
+      "ModelShadeFace": {
+        "type": "object",
+        "description": "A static shading geometry Schema.",
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "ModelShadeFace"
+                ]
+              },
+              "face_type": {
+                "description": "Face type = `Shading`.",
+                "type": "string",
+                "enum": [
+                  "Shading"
+                ]
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ModelFaceBase"
+          }
+        ]
       },
       "ModelState": {
         "description": "State for a dynamic model. Most of the time a dynamic model is an apertures (window\ngroup).\n",
         "type": "object",
         "required": [
-          "count",
           "models"
         ],
         "properties": {
           "name": {
             "description": "A unique name for this state.",
             "type": "string"
-          },
-          "count": {
-            "description": "The count for this state.",
-            "type": "integer",
-            "minimum": 0
           },
           "models": {
             "type": "object",
@@ -959,15 +2701,15 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/Attributes"
-          },
-          {
             "properties": {
               "type": {
                 "type": "string",
                 "enum": [
                   "PolyFace"
                 ]
+              },
+              "id": {
+                "$ref": "#/components/schemas/UUID"
               },
               "faces": {
                 "type": "array",
@@ -976,6 +2718,9 @@
                 }
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/Attributes"
           }
         ]
       },
@@ -987,17 +2732,27 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/Face"
-          },
-          {
             "properties": {
               "type": {
                 "type": "string",
                 "enum": [
                   "ShadeFace"
                 ]
+              },
+              "face_type": {
+                "description": "Face type = `Shading`.",
+                "type": "string",
+                "enum": [
+                  "Shading"
+                ]
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/FaceBase"
+          },
+          {
+            "$ref": "#/components/schemas/Attributes"
           }
         ]
       },
@@ -1010,6 +2765,9 @@
           "extrusion"
         ],
         "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -1020,16 +2778,19 @@
             "description": "List of vertices to define space's plan.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Vertices"
+              "$ref": "#/components/schemas/Vertex"
             },
             "minItems": 3
           },
           "apertures": {
-            "description": "List of apertures based on WWR for each wall.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ApertureWWR"
-            }
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Aperture"
+              },
+              {
+                "$ref": "#/components/schemas/Apertures"
+              }
+            ]
           },
           "extrusion": {
             "type": "number",
@@ -1042,7 +2803,8 @@
         "type": "object",
         "description": "A collection of Extruded Rooms to create a Pollination model.",
         "required": [
-          "type"
+          "type",
+          "spaces"
         ],
         "allOf": [
           {
@@ -1075,8 +2837,8 @@
           }
         ]
       },
-      "Vertices": {
-        "description": "A single vertice as x, y, z.",
+      "Vertex": {
+        "description": "A single vertex as x, y, z.",
         "type": "array",
         "items": {
           "type": "number",
@@ -1090,56 +2852,1141 @@
           0
         ]
       },
-      "RadianceModifier": {
-        "description": "A radiance modifier. In most cases modifiers are radiance materials\nbut pollination supports other modifiers as well.\nSee http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces\n",
-        "type": "string"
+      "Average": {
+        "type": "object",
+        "description": "Schema for calculating average values for grid-based studies.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GridBasedPostProcess"
+          }
+        ]
       },
-      "Simulation": {
-        "description": "A pollination simulation job",
+      "GridBasedPostProcess": {
+        "description": "Base schema for grid-based simulation workflows.",
         "type": "object",
         "required": [
+          "grid_ids",
+          "depends_on"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Simulation"
+          },
+          {
+            "properties": {
+              "grid_ids": {
+                "description": "A list of ids for sensor-grids. If used as part of simulation in after_success this\nvalue will be overwritten by sensor ids in that simulation.\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UUID"
+                }
+              },
+              "per_grid": {
+                "description": "A Boolean to indicate if average should be calculated per sensor grid or for all\nthe grids together. The value by default is true.\n",
+                "type": "boolean",
+                "default": true
+              }
+            }
+          }
+        ]
+      },
+      "InBetween": {
+        "type": "object",
+        "description": "Schema for calculating number of sensors between min and max values.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GridBasedPostProcess"
+          },
+          {
+            "properties": {
+              "minimum": {
+                "description": "Minimum threshold value",
+                "type": "number",
+                "format": "double"
+              },
+              "include_minimum": {
+                "description": "Set to true to include the minimum threshold itself.",
+                "type": "boolean",
+                "default": false
+              },
+              "maximum": {
+                "description": "Maximum threshold value",
+                "type": "number",
+                "format": "double"
+              },
+              "include_maximum": {
+                "description": "Set to true to include the maximum threshold itself.",
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        ]
+      },
+      "LargerThan": {
+        "type": "object",
+        "description": "Schema for calculating number of sensors with value larger than threshold.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GridBasedPostProcess"
+          },
+          {
+            "properties": {
+              "threshold": {
+                "description": "Threshold value",
+                "type": "number",
+                "format": "double"
+              },
+              "include_threshold": {
+                "description": "Set to true to include the threshold itself in calculation.",
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        ]
+      },
+      "SmallerThan": {
+        "type": "object",
+        "description": "Schema for calculating number of sensors with value smaller than threshold.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LargerThan"
+          }
+        ]
+      },
+      "Glass": {
+        "type": "object",
+        "description": "Radiance glass material.",
+        "required": [
           "type",
-          "id"
+          "r_transmittance",
+          "g_transmittance",
+          "b_transmittance"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Material type",
+                "enum": [
+                  "Glass"
+                ]
+              },
+              "r_transmittance": {
+                "type": "number",
+                "description": "transmittance for red. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "g_transmittance": {
+                "type": "number",
+                "description": "transmittance for green. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "b_transmittance": {
+                "type": "number",
+                "description": "transmittance for blue. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "refraction": {
+                "type": "number",
+                "description": "Index of refraction. 1.52 for glass and 1.4 for ETFE",
+                "default": 1.52
+              },
+              "modifier": {
+                "description": "Placeholder for modifier.",
+                "type": "string",
+                "default": "void"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MaterialBase"
+          }
+        ]
+      },
+      "MaterialBase": {
+        "type": "object",
+        "description": "Base schema for Radiance materials.",
+        "required": [
+          "type",
+          "name"
         ],
         "properties": {
           "type": {
-            "description": "Simulation type.",
             "type": "string",
+            "description": "Material type",
             "enum": [
-              "daylight-factor",
-              "solar-access"
+              "MaterialBase"
             ]
           },
-          "id": {
-            "description": "Simulation id assigned by server.",
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
-          "models": {
-            "description": "A collection of model ids.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UUID"
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          }
+        }
+      },
+      "Opaque": {
+        "type": "object",
+        "description": "Simplified Radiance opaque material.",
+        "required": [
+          "reflectance"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Material type",
+                "enum": [
+                  "Opaque"
+                ]
+              },
+              "reflectance": {
+                "type": "number",
+                "description": "Material reflectance. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              }
             }
           },
-          "grids": {
-            "description": "A collection of sensor-grid ids.",
+          {
+            "$ref": "#/components/schemas/MaterialBase"
+          }
+        ]
+      },
+      "Plastic": {
+        "type": "object",
+        "description": "Radiance opaque material.",
+        "required": [
+          "type",
+          "r_reflectance",
+          "g_reflectance",
+          "b_reflectance"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Material type",
+                "enum": [
+                  "Plastic"
+                ]
+              },
+              "r_reflectance": {
+                "type": "number",
+                "description": "Reflectance for red. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "g_reflectance": {
+                "type": "number",
+                "description": "Reflectance for green. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "b_reflectance": {
+                "type": "number",
+                "description": "Reflectance for blue. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "specularity": {
+                "type": "number",
+                "description": "Fraction of specularity. Specularity fractions greater than 0.1 are not realistic\n(Default 0)\n",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0
+              },
+              "roughness": {
+                "type": "number",
+                "description": "Roughness is specified as the rms slope of surface facets. A\nvalue of 0 corresponds to a perfectly smooth surface, and a value of 1\nwould be a very rough surface. Roughness values greater than 0.2 are not\nvery realistic.\n",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0
+              },
+              "modifier": {
+                "description": "Placeholder for modifier.",
+                "type": "string",
+                "default": "void"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MaterialBase"
+          }
+        ]
+      },
+      "Transparent": {
+        "type": "object",
+        "description": "Simplified Radiance transparent material.",
+        "required": [
+          "name",
+          "transmittance"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Material type",
+                "enum": [
+                  "Transparent"
+                ]
+              },
+              "transmittance": {
+                "type": "number",
+                "description": "Material transmittance. The value should be between 0 and 1.",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MaterialBase"
+          }
+        ]
+      },
+      "RadianceParameters": {
+        "type": "object",
+        "description": "Parameters for Radiance-based simulations. You can use base to set the values based on\npreset values and then use overwrite to overwrite custom parameters.\n",
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Base input value to set the initial parameters. The default value is set to `default` which will use Radiance's default parameters. Other options are `low`, `medium` and `high`.",
+            "enum": [
+              "default",
+              "low",
+              "medium",
+              "high"
+            ],
+            "default": "default"
+          },
+          "overwrite": {
+            "type": "string",
+            "description": "A string of Radiance parameters to overwrite base values. e.g. `\"-aa 0.01 -ad 4800\"`\n"
+          }
+        },
+        "example": {
+          "base": "default",
+          "overwrite": "-ab 5 -aa 0.01 -ad 4800"
+        }
+      },
+      "DaylightFactor": {
+        "description": "A grid-based simulation schema.",
+        "type": "object",
+        "required": [
+          "type",
+          "grids"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "description": "Simulation type.",
+                "type": "string",
+                "enum": [
+                  "DaylightFactor"
+                ]
+              },
+              "grids": {
+                "description": "A collection of sensor-grid ids.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UUID"
+                }
+              },
+              "models": {
+                "description": "A collection of model ids.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UUID"
+                }
+              },
+              "radiance_parameters": {
+                "$ref": "#/components/schemas/RadianceParameters"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Simulation"
+          }
+        ]
+      },
+      "PointInTime": {
+        "description": "A grid-based simulation schema.",
+        "type": "object",
+        "required": [
+          "type",
+          "sky",
+          "output_type"
+        ],
+        "allOf": [
+          {
+            "properties": {
+              "type": {
+                "description": "Simulation type.",
+                "type": "string",
+                "enum": [
+                  "PointInTime"
+                ]
+              },
+              "sky": {
+                "description": "Radiance sky.",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CIESky"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClimateBasedSky"
+                  }
+                ]
+              },
+              "output_type": {
+                "description": "Simulation output type. Options are `illuminance` and `radiation`.",
+                "type": "string",
+                "enum": [
+                  "illuminance",
+                  "radiation"
+                ],
+                "default": "illuminance"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/DaylightFactor"
+          }
+        ]
+      },
+      "CIESky": {
+        "description": "Standard CIE sky.",
+        "type": "object",
+        "required": [
+          "location",
+          "datetime"
+        ],
+        "properties": {
+          "north": {
+            "description": "A number between -360 and 360 that represents the degrees off from\nthe y-axis to make North. The default North direction is set to the\nY-axis. Default is 0 degrees.\n",
+            "type": "number",
+            "minimum": -360,
+            "maximum": 360,
+            "default": 0
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "datetime": {
+            "$ref": "#/components/schemas/DateTime"
+          },
+          "sky_type": {
+            "description": "CIE Sky Type. `+s` = is sunnyWSun, `-s` = sunnyNoSun, `+i` = intermWSun,\n`-i` = intermNoSun, `-c` = cloudySky , `-u` = uniformSky\n",
+            "type": "string",
+            "enum": [
+              "+s",
+              "-s",
+              "+i",
+              "-i",
+              "-c",
+              "-u"
+            ],
+            "default": "+s"
+          }
+        }
+      },
+      "ClimateBasedSky": {
+        "description": "Point-in-time climate-based sky.",
+        "type": "object",
+        "required": [
+          "location",
+          "datetime",
+          "direct_irradiance",
+          "diffuse_irradiance"
+        ],
+        "properties": {
+          "north": {
+            "description": "A number between -360 and 360 that represents the degrees off from\nthe y-axis to make North. The default North direction is set to the\nY-axis. Default is 0 degrees.\n",
+            "type": "number",
+            "minimum": -360,
+            "maximum": 360,
+            "default": 0
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "datetime": {
+            "$ref": "#/components/schemas/DateTime"
+          },
+          "direct_irradiance": {
+            "description": "Direct-normal irradiance in W/m^2.",
+            "type": "number",
+            "minimum": 0
+          },
+          "diffuse_irradiance": {
+            "description": "Diffuse-horizontal irradiance in W/m^2.",
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      },
+      "Simulation": {
+        "description": "Pollination simulation.",
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "id": {
+            "$ref": "#/components/schemas/UUIDReadOnly"
+          },
+          "depends_on": {
+            "description": "Name of other simulations that this simulation depends on. This simulation will be\nexecuted after all dependencies are finished.\n",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UUID"
+              "type": "string"
+            }
+          },
+          "logs": {
+            "description": "Link to related logs to this simulation.",
+            "type": "string",
+            "format": "url"
+          },
+          "outputs": {
+            "description": "List of simulation outputs. Each output has a link to access the output\nresource. The url will only be functional if the execution of simulation is\nsuccessful otherwise it will throw a `404 Not Found` error.\n",
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/Action"
+            }
+          },
+          "actions": {
+            "description": "A collection of actions for this simulation.",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Action"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/SimulationStatus"
+          }
+        },
+        "example": {
+          "name": "market_place_comfort_study",
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "dependes_on": [
+            "market_place_radiation_simulation",
+            "market_place_airflow_simulation"
+          ],
+          "logs": "https://api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-426655440000/logs",
+          "outputs": [
+            {
+              "verb": "post",
+              "description": "*.res file generated by Radiance.",
+              "payload": {
+                "output": "file"
+              },
+              "url": "https://api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-426655440000/outputs"
+            },
+            {
+              "verb": "post",
+              "description": "List of list of values for each sensor-grid.",
+              "payload": {
+                "output": "values"
+              },
+              "url": "https://api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-426655440000/outputs"
+            },
+            {
+              "verb": "post",
+              "description": "List of average values for each sensor-grid.",
+              "payload": {
+                "output": "average"
+              },
+              "url": "https://api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-426655440000/outputs"
+            }
+          ],
+          "actions": [
+            {
+              "description": "Start the simulation.",
+              "verb": "put",
+              "payload": {
+                "action": "start"
+              },
+              "url": "api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-42665544/actions"
+            },
+            {
+              "description": "Stop the simulation.",
+              "verb": "put",
+              "payload": {
+                "action": "stop"
+              },
+              "url": "api.pollination.cloud/simulations/123e4567-e89b-12d3-a456-42665544/actions"
+            }
+          ]
+        }
+      },
+      "SimulationEvent": {
+        "description": "Simulation event",
+        "type": "object",
+        "required": [
+          "status",
+          "timestamp"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of simulation/ workflow.",
+            "enum": [
+              "Created",
+              "Started",
+              "Canceled",
+              "Finished"
+            ]
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/TimeStamp"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "example": [
+          {
+            "status": "Created",
+            "timestamp": "2019-03-11T18:47:13Z"
+          },
+          {
+            "status": "Started",
+            "timestamp": "2019-03-11T18:47:20Z"
+          },
+          {
+            "status": "Canceled",
+            "timestamp": "2019-03-11T18:47:30Z"
+          },
+          {
+            "status": "Started",
+            "timestamp": "2019-03-11T18:48:25Z"
+          },
+          {
+            "status": "Finished",
+            "timestamp": "2019-03-11T19:09:21Z"
+          }
+        ]
+      },
+      "SimulationStatus": {
+        "description": "Status for a single simulation.",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "Created",
+              "Started",
+              "Canceled",
+              "Failed",
+              "Succeeded"
+            ]
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimulationEvent"
             }
           }
         }
+      },
+      "Action": {
+        "type": "object",
+        "description": "A HTTP action.",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "description": {
+            "description": "Human readable description for this action.",
+            "type": "string"
+          },
+          "verb": {
+            "description": "HTTP verb",
+            "type": "string",
+            "enum": [
+              "head",
+              "get",
+              "post",
+              "patch",
+              "put",
+              "delete"
+            ],
+            "default": "put"
+          },
+          "payload": {
+            "description": "HTTP call payload",
+            "type": "object"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "example": {
+          "verb": "put",
+          "payload": {
+            "action": "stop"
+          },
+          "url": "https://api.pollination.cloud/simulations/1234-5678-910/actions"
+        }
+      },
+      "DateTime": {
+        "description": "DateTime",
+        "type": "object",
+        "properties": {
+          "month": {
+            "description": "A value for month between `1`-`12`. Default is `1`.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 1
+          },
+          "day": {
+            "type": "integer",
+            "description": "A value for day between `1`-`31`. Default is `1`.",
+            "minimum": 1,
+            "maximum": 31,
+            "default": 1
+          },
+          "hour": {
+            "type": "integer",
+            "description": "A value for hour between `0`-`23`. Default is `0`.",
+            "minimum": 0,
+            "maximum": 23,
+            "default": 0
+          },
+          "minute": {
+            "type": "integer",
+            "description": "A value for month between `0`-`59`. Default is `0`.",
+            "minimum": 0,
+            "maximum": 59,
+            "default": 0
+          },
+          "is_leap_year": {
+            "description": "A boolean to indicate if datetime is for a leap year. Default is `false`.\n",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "description": "Error response schema.",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Internal code error. See pollination.cloud/api/response-codes for more information.\n"
+          },
+          "doc_url": {
+            "type": "string",
+            "description": "A URL to more information about the error code reported.",
+            "default": "pollination.cloud/api/response-codes"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Forbidden",
+              "Unauthorized",
+              "InvalidParameter",
+              "MissingParameter",
+              "RuntimeError"
+            ]
+          },
+          "param": {
+            "type": "string",
+            "description": "If the error is parameter-specific, the parameter related to the error."
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error and if you are\nlucky a helpful suggestion to address the error.\n"
+          }
+        },
+        "example": {
+          "code": 0,
+          "doc_url": "pollination.cloud/api/response-codes",
+          "type": "Unauthorized",
+          "message": "A valid token is required. Current token is expired."
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response schema.",
+        "required": [
+          "errors"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A human readble error message."
+          },
+          "errors": {
+            "type": "array",
+            "description": "Collection of errors.",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        },
+        "example": {
+          "message": "Invalid token.",
+          "erros": [
+            {
+              "code": 0,
+              "doc_url": "pollination.cloud/api/response-codes",
+              "type": "Unauthorized",
+              "message": "A valid token is required. Current token is expired."
+            }
+          ]
+        }
+      },
+      "Link": {
+        "type": "object",
+        "required": [
+          "name",
+          "url"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "example": {
+          "name": "result_file",
+          "description": "*.res file generated by Radiance.",
+          "url": "https://api.pollination.cloud/simulation/1234-5678-910/outputs/result-file"
+        }
+      },
+      "Location": {
+        "description": "Location",
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "description": "Location latitude between `-90` and `90`. Default is `0`.",
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "default": 0
+          },
+          "longitude": {
+            "description": "Location longitude between `-180` (west) and `180` (east). Default is `0`.\n",
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "default": 0
+          },
+          "time_zone": {
+            "description": "Time zone between `-12` hours (west) and `12` hours (east). Default is `0`.\n",
+            "type": "number",
+            "minimum": -12,
+            "maximum": 12,
+            "default": 0
+          },
+          "elevation": {
+            "description": "A number for elevation of the location. Default is `0`",
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "Log": {
+        "description": "Log",
+        "type": "object",
+        "required": [
+          "timestamp",
+          "source",
+          "message"
+        ],
+        "properties": {
+          "timestamp": {
+            "$ref": "#/components/schemas/TimeStamp"
+          },
+          "source": {
+            "description": "Source process.",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of source process."
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Id of source process."
+              }
+            }
+          },
+          "message": {
+            "description": "Log message.",
+            "type": "string"
+          }
+        },
+        "example": {
+          "timestamp": "2019-03-11T18:47:13Z",
+          "source": "daylight_factor_simulation::123e4567-e89b-12d3-a456-426655440000",
+          "message": "Simulation finished successfully!"
+        }
+      },
+      "TimeStamp": {
+        "description": "Timestamp",
+        "type": "string",
+        "format": "datetime",
+        "example": "2019-03-11T18:47:13Z"
       },
       "UUID": {
         "description": "A resource identifier string",
         "type": "string",
         "format": "uuid",
         "example": "123e4567-e89b-12d3-a456-426655440000"
+      },
+      "UUIDReadOnly": {
+        "description": "A resource identifier string",
+        "type": "string",
+        "format": "uuid",
+        "readOnly": true,
+        "example": "123e4567-e89b-12d3-a456-426655440000"
+      },
+      "ValidString": {
+        "description": "A text input with no white space or special character",
+        "type": "string",
+        "pattern": "^[.A-Za-z0-9_-]*$"
+      },
+      "Workflow": {
+        "type": "object",
+        "description": "Pollination workflow schema",
+        "required": [
+          "type",
+          "name",
+          "simulations"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Workflow"
+            ]
+          },
+          "name": {
+            "$ref": "#/components/schemas/ValidString"
+          },
+          "spec": {
+            "type": "object",
+            "description": "Workflow specifications.",
+            "readOnly": true,
+            "properties": {
+              "parallelism": {
+                "description": "Parallelism limits the max total parallel pods that can execute at the same\ntime in a workflow\n",
+                "type": "integer"
+              }
+            }
+          },
+          "simulations": {
+            "description": "List of workflow simulations",
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DaylightFactor"
+                },
+                {
+                  "$ref": "#/components/schemas/PointInTime"
+                }
+              ]
+            }
+          },
+          "actions": {
+            "description": "List of available actions for workflow.",
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/Action"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/WorkflowStatus"
+          }
+        }
+      },
+      "WorkflowEvent": {
+        "description": "Event",
+        "type": "object",
+        "properties": {
+          "status": {
+            "description": "Task status",
+            "type": "string",
+            "enum": [
+              "Submitted",
+              "Started",
+              "Succeeded",
+              "Failed"
+            ]
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/TimeStamp"
+          }
+        }
+      },
+      "WorkflowStatus": {
+        "type": "object",
+        "description": "Workflow status based on each simulation status.",
+        "readOnly": true,
+        "properties": {
+          "status": {
+            "type": "object",
+            "description": "Status of workflow simulations.",
+            "properties": {
+              "Started": {
+                "type": "array",
+                "description": "Started simulations.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "description": "Simulation name.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Simulation id.",
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "Canceled": {
+                "type": "array",
+                "description": "Canceled simulations.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "description": "Simulation name.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Simulation id.",
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "Failed": {
+                "type": "array",
+                "description": "Failed simulations.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "description": "Simulation name.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Simulation id.",
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "Succeeded": {
+                "type": "array",
+                "description": "Succeeded simulations.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "description": "Simulation name.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Simulation id.",
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "history": {
+            "description": "List of events for workflow.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimulationEvent"
+            }
+          }
+        }
       }
     },
     "responses": {
+      "Accepted": {
+        "description": "Accepted",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer",
+              "default": 30
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "url",
+                "status",
+                "submitted_at"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Id of the newly submitted resource.",
+                  "format": "uuid"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL to access the resource."
+                },
+                "timestamp": {
+                  "$ref": "#/components/schemas/TimeStamp"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A human readble message."
+                }
+              }
+            }
+          }
+        }
+      },
       "Created": {
         "description": "Created successfuly",
         "headers": {
@@ -1172,46 +4019,8 @@
           }
         }
       },
-      "Finished": {
-        "description": "A long task has finished successfully.",
-        "headers": {
-          "Location": {
-            "schema": {
-              "type": "string"
-            }
-          }
-        },
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "Id of the newly created resource.",
-                  "format": "uuid"
-                },
-                "message": {
-                  "type": "string",
-                  "description": "A human readble message."
-                },
-                "finished_at": {
-                  "type": "string",
-                  "format": "datetime",
-                  "description": "Finished time."
-                }
-              },
-              "example": {
-                "id": "123e4567-e89b-12d3-a456-426655440000",
-                "finished_at": "Feb 19, 2019 8:35 am",
-                "message": "The sesstion is finished. Use header Location link to access the resource."
-              }
-            }
-          }
-        }
-      },
       "Forbidden": {
-        "description": "Access forbidden.",
+        "description": "Access forbidden",
         "content": {
           "application/json": {
             "schema": {
@@ -1231,55 +4040,26 @@
           }
         }
       },
-      "InProgress": {
-        "description": "Still in progress",
+      "InProcessModel": {
+        "description": "Processing",
         "headers": {
           "Retry-After": {
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "default": 60
             }
           }
         },
         "content": {
           "application/json": {
             "schema": {
-              "type": "object",
-              "required": [
-                "retry_after",
-                "status_url"
-              ],
-              "properties": {
-                "completion": {
-                  "type": "number",
-                  "description": "Percentage of completion",
-                  "minimum": 0,
-                  "maximum": 100
-                },
-                "retry_after": {
-                  "type": "integer",
-                  "description": "Suggested time to retry back in seconds."
-                },
-                "message": {
-                  "type": "string",
-                  "description": "A human readble message.",
-                  "default": "In progress..."
-                },
-                "status_url": {
-                  "type": "string",
-                  "description": "The URL the to check the status of the running task."
-                }
-              }
-            },
-            "example": {
-              "id": "123e4567-e89b-12d3-a456-426655440000",
-              "message": "The sesstion is started. Use status_url to monitor the progress of the run.",
-              "status_url": "api.pollination.cloud/123e4567-e89b-12d3-a456-426655440000/status"
+              "$ref": "#/components/schemas/InProcessModel"
             }
           }
         }
       },
       "Invalid": {
-        "description": "Invalid data was sent.",
+        "description": "Invalid input data",
         "content": {
           "application/json": {
             "schema": {
@@ -1301,7 +4081,7 @@
         }
       },
       "NotFound": {
-        "description": "Resource was not found.",
+        "description": "Resource was not found",
         "content": {
           "application/json": {
             "schema": {
@@ -1322,7 +4102,7 @@
         }
       },
       "Refused": {
-        "description": "The request is refused.",
+        "description": "The request is refused",
         "content": {
           "application/json": {
             "schema": {
@@ -1342,82 +4122,117 @@
           }
         }
       },
-      "Retrived": {
-        "description": "Retrive a list of resource ids",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                },
-                "message": {
-                  "type": "string",
-                  "description": "A human readble message."
-                }
-              },
-              "example": {
-                "ids": [
-                  "123e4567-e89b-12d3-a456-426655440000",
-                  "987e4567-e89b-15t3-a456-426655440200"
-                ],
-                "message": "The resources are retrived successfuly."
-              }
-            }
-          }
-        }
-      },
-      "Started": {
-        "description": "A task is started",
+      "RetrivedIds": {
+        "description": "Retrived",
         "headers": {
-          "Retry-After": {
-            "schema": {
-              "type": "integer"
-            }
+          "Link": {
+            "$ref": "#/components/headers/LinkHeader"
           }
         },
         "content": {
           "application/json": {
             "schema": {
-              "type": "object",
-              "required": [
-                "id",
-                "status_url"
-              ],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "Id of the newly created resource.",
-                  "format": "uuid"
-                },
-                "message": {
-                  "type": "string",
-                  "description": "A human readble message."
-                },
-                "status_url": {
-                  "type": "string",
-                  "description": "The URL the to check the status of the running task."
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/UUID"
+              },
+              "example": [
+                "123e4567-e89b-12d3-a456-426655440000",
+                "987e4567-e89b-15t3-a456-426655440200"
+              ]
+            }
+          }
+        }
+      },
+      "RetrivedModels": {
+        "description": "Retrived",
+        "headers": {
+          "Link": {
+            "$ref": "#/components/headers/LinkHeader"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/InProcessModel"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LinkedModel"
+                  }
+                ]
               }
-            },
-            "example": {
-              "id": "123e4567-e89b-12d3-a456-426655440000",
-              "message": "The task is started. Use status_url to monitor the progress of the run.",
-              "status_url": "api.pollination.cloud/123e4567-e89b-12d3-a456-426655440000/status"
+            }
+          }
+        }
+      },
+      "RetrivedSimulations": {
+        "description": "Retrived",
+        "headers": {
+          "Link": {
+            "$ref": "#/components/headers/LinkHeader"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/DaylightFactor"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PointInTime"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "RetrivedWorkflows": {
+        "description": "Retrived",
+        "headers": {
+          "Link": {
+            "$ref": "#/components/headers/LinkHeader"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Workflow"
+              }
             }
           }
         }
       },
       "Succeed": {
-        "description": "Success"
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "A human readble error message."
+                }
+              },
+              "example": {
+                "message": "Success!"
+              }
+            }
+          }
+        }
       },
       "Unauthorized": {
-        "description": "Unauthorized.",
+        "description": "Unauthorized",
         "content": {
           "application/json": {
             "schema": {
@@ -1427,7 +4242,7 @@
         }
       },
       "Unsupported": {
-        "description": "Unsupported media type content.",
+        "description": "Unsupported media type content",
         "content": {
           "application/json": {
             "schema": {
@@ -1439,8 +4254,8 @@
     },
     "parameters": {
       "resourceId": {
-        "name": "id",
         "in": "path",
+        "name": "id",
         "description": "The resource identifier string",
         "required": true,
         "schema": {
@@ -1456,9 +4271,33 @@
           "type": "string",
           "format": "date-time"
         }
+      },
+      "LinkHeader": {
+        "description": "[Link header](#section/Pagination/Link-header). It includes pagination information.\n",
+        "schema": {
+          "type": "string"
+        }
       }
     },
     "requestBodies": {
+      "Action": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "enum": [
+                    "start",
+                    "stop"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      },
       "Model": {
         "content": {
           "application/json": {
@@ -1468,16 +4307,12 @@
                   "$ref": "#/components/schemas/Model"
                 },
                 {
-                  "$ref": "#/components/schemas/SpaceBySpaceModel"
-                },
-                {
                   "$ref": "#/components/schemas/FaceByFaceModel"
                 }
               ]
             }
           }
         },
-        "description": "Pollination Model",
         "required": true
       },
       "SensorGrid": {
@@ -1489,6 +4324,33 @@
           }
         },
         "description": "SensorGrid",
+        "required": true
+      },
+      "Simulation": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DaylightFactor"
+                },
+                {
+                  "$ref": "#/components/schemas/PointInTime"
+                }
+              ]
+            }
+          }
+        },
+        "required": true
+      },
+      "Workflow": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Workflow"
+            }
+          }
+        },
         "required": true
       }
     },
