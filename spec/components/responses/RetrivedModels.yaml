@@ -1,0 +1,12 @@
+description: Retrived
+headers:
+  Link:
+    $ref: "#/components/headers/LinkHeader"
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        oneOf:
+          - $ref:  "#/components/schemas/InProcessModel"
+          - $ref:  "#/components/schemas/LinkedModel"

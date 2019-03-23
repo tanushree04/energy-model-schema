@@ -2,6 +2,7 @@ type: object
 description: A collection of Faces to create a Pollination model.
 required:
   - type
+  - faces
 allOf:
 - $ref: "#/components/schemas/ModelBase"
 - properties:
@@ -15,8 +16,14 @@ allOf:
       items:
         type: object
         anyOf:
-          # most likely need to add support for Zones too!
           - $ref: "#/components/schemas/Face"
           - $ref: "#/components/schemas/PolyFace"
           - $ref: "#/components/schemas/ShadeFace"
           - $ref: "#/components/schemas/DynamicModel"
+    # zoens are for energy modeling and added here as place-holder
+    # these objects should be revised for energy model schema.
+    zones:
+      description: List of Zones in this model. Only useful for creating energy models.
+      type: array
+      items:
+        $ref: "#/components/schemas/Zone"

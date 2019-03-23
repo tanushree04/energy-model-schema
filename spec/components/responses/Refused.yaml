@@ -1,4 +1,4 @@
-description: The request is refused.
+description: The request is refused
 content:
   application/json:
     schema:

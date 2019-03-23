@@ -3,6 +3,7 @@ description: Shared properties for Pollination models.
 required:
   - convert_to_meters
   - id
+  - name
 properties:
   convert_to_meters:
     description: |
@@ -11,11 +12,6 @@ properties:
     type: number
     default: 1.0
   id:
-    description: Model id to be provided by server.
-    type: string
-    format: uuid
-    readOnly: true
+    $ref: "#/components/schemas/UUIDReadOnly"
   name:
-    description: Optional name.
-    type: string
-    pattern: "^[.A-Za-z0-9_-]*$"
+    $ref: "#/components/schemas/ValidString"

@@ -3,9 +3,15 @@ description: A static shading geometry Schema.
 required:
   - type
 allOf:
-- $ref: "#/components/schemas/Face"
 - properties:
     type:
       type: string
       enum:
-        - "ShadeFace"
+        - ShadeFace
+    face_type:
+      description: Face type = `Shading`.
+      type: string
+      enum:
+        - Shading
+- $ref: "#/components/schemas/FaceBase"
+- $ref: "#/components/schemas/Attributes"

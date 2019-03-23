@@ -3,7 +3,5 @@ content:
     schema:
       oneOf:
         - $ref: "#/components/schemas/Model"
-        - $ref: "#/components/schemas/SpaceBySpaceModel"
         - $ref: "#/components/schemas/FaceByFaceModel"
-description: Pollination Model
 required: true

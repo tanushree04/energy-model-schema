@@ -1,13 +1,11 @@
 type: object
-description: Geometrical representation of a Face with no attributes.
+description: |
+  Face geometry with apertures but with no attributes. This face type is useful for
+  creating PolyFaces.
 allOf:
   - $ref: "#/components/schemas/FaceBase"
   - properties:
-      apertures:
-        description: List of apertures.
-        type: array
-        items:
-          type: object
-          oneOf:
-            - $ref: "#/components/schemas/Aperture"
-            - $ref: "#/components/schemas/ApertureWWR"
+      aperture:
+        oneOf:
+          - $ref: "#/components/schemas/Aperture"
+          - $ref: "#/components/schemas/Apertures"

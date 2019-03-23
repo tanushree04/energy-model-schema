@@ -1,5 +1,5 @@
-name: id
 in: path
+name: id
 description: The resource identifier string
 required: true
 schema:

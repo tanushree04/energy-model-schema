@@ -1,4 +1,4 @@
-description: Invalid data was sent.
+description: Invalid input data
 content:
   application/json:
     schema:

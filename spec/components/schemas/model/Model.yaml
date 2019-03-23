@@ -4,6 +4,8 @@ description: |
   and CFD models. The current version only supports daylight simulation.
 required:
   - type
+  - vertices
+  - faces
 allOf:
 - $ref: "#/components/schemas/ModelBase"
 - properties:
@@ -13,40 +15,32 @@ allOf:
       enum:
         - Model
     vertices:
-      description: A flattened list of unique vertices.
+      description: An ordered, flattened list of unique vertices.
       type: array
-      # uniqueItems should be true. I leave it to false for now which will allow less
-      # efficient models with duplicate vertices.
-      uniqueItems: false
+      uniqueItems: true
       minItems: 3
       items:
-        $ref: "#/components/schemas/Vertices"
+        $ref: "#/components/schemas/Vertex"
     faces:
-      description: A list of ModelFaces.
+      description: |
+        A flattened list of ModelFaces. A ModelFace can represent an opaque face,
+        an aperture or a shading face.
       type: array
       items:
         type: object
         anyOf:
           - $ref: "#/components/schemas/ModelFace"
-          - $ref: "#/components/schemas/ShadeFace"
-    apertures:
-      description: A list of ModelApertures.
-      type: array
-      items:
-        $ref: "#/components/schemas/ModelAperture"
-    dynamic_models:
+          - $ref: "#/components/schemas/ModelAperture"
+          - $ref: "#/components/schemas/ModelShadeFace"
+    dynamic_faces:
       # this is now an anti-pattern and works against the idea of flattened model
       # in the future we need a specific DynamicModel that is not built as a face
       # by face model. 
-      description: A list of DynamicModels.
+      description: |
+        A list of dynamic models. `#experimental`
       type: array
       items:
         $ref: "#/components/schemas/DynamicModel"
-    zones:
-      description: A list of Zones in this model.
-      type: array
-      items:
-        $ref: "#/components/schemas/Zone"
     rad_modifiers:
       description: |
         A list of unique radiance modifiers. In most cases modifiers are radiance
@@ -54,7 +48,18 @@ allOf:
         See http://radsite.lbl.gov/radiance/refer/ray.html#Surfaces
       type: array
       items:
-        $ref: "#/components/schemas/RadianceModifier"
+        anyOf:
+          - $ref: "#/components/schemas/Opaque"
+          - $ref: "#/components/schemas/Transparent"
+          - $ref: "#/components/schemas/Plastic"
+          - $ref: "#/components/schemas/Glass"
+    # zoens and ep_construction are for energy modeling and added here as place-holder
+    # these objects should be revised for energy model schema.
+    zones:
+      description: A list of Zones in this model.
+      type: array
+      items:
+        $ref: "#/components/schemas/Zone"
     ep_constructions:
       description:
         A list of unique ep_constructions for energy simulation

@@ -1,0 +1,10 @@
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        action:
+          enum:
+            - start
+            - stop
+required: true

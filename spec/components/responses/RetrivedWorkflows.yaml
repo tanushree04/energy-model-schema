@@ -1,0 +1,10 @@
+description: Retrived
+headers:
+  Link:
+    $ref: "#/components/headers/LinkHeader"
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref:  "#/components/schemas/Workflow"

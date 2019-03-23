@@ -1,4 +1,4 @@
-swaggerUI: false
+swaggerUI: true
 oasVersion: '3.0.0'
 splitSpec: true
 codeSamples: true

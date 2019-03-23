@@ -1,4 +1,4 @@
-description: Unsupported media type content.
+description: Unsupported media type content
 content:
   application/json:
     schema:

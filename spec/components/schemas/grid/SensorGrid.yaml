@@ -3,24 +3,17 @@ description: A flattened collection of sensors for grid-based studies.
 required:
   - type
   - sensors
-  - length
+  - sensor_count
   - id
 properties:
   type:
     type: string
     enum: ["SensorGrid"]
-  length:
+  sensor_count:
     description: Number of total sensors.
     type: integer
-  id:
-    description: Grid id provided by server.
-    type: string
-    format: uuid
-    readOnly: true
   name:
-    description: Optional name for this Grid.
-    type: string
-    pattern: "^[.A-Za-z0-9_-]*$"
+    $ref: "#/components/schemas/ValidString"
   sensors:
     description: A flattened array of sensors.
     type: array
@@ -29,9 +22,10 @@ properties:
 example:
   {
     "type": "SensorGrid",
-    "length": 2, 
+    "sensor_count": 4, 
     "name": "example_grid",
     "sensors": [
-      [0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0] 
+      [0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+      [0.0, 1.0, 1.2, 0.0, 0.0, 1.0], [0.0, 1.0, 1.2, 0.0, 1.0, 0.0]
     ]
   }

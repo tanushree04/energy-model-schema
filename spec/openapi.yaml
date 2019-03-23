@@ -23,9 +23,6 @@ tags:
   - name: Sensor Grid
     description: |
       Sensor Grid is a collection of sensors for grid-based studies.
-  - name: Radiance Material
-    description: |
-      Radiance material definitions.
   - name: Model
     description: |
       Models includes geometrical information as well as materials, constructions,
@@ -33,10 +30,13 @@ tags:
       and CFD modeling.
   - name: Simulation
     description: |
-      Simulation is a collection of commands to be applied on input models.
+      Simulation in Pollination is an executable recipe which has a set of predefined
+      instruction to execute specfic set of commands. In the near future all the recipes
+      in Ladybug Tools plugins will be available as Pollination simulations.
   - name: Workflow
     description: |
-      A collection of chained simulations.
+      Workflow is a collection of usually interrelated simulations. Simulations will be
+      executed in steps or in parallel based on interdependencies between simulations.
 
 security:
   - JWT: []

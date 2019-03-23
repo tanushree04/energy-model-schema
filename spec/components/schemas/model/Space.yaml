@@ -8,6 +8,8 @@ required:
   - profile
   - extrusion
 properties:
+  id:
+    $ref: "#/components/schemas/UUID"
   type:
     type: string
     enum: ["Space"]
@@ -15,13 +17,12 @@ properties:
     description: List of vertices to define space's plan. 
     type: array
     items:
-      $ref: "#/components/schemas/Vertices"
+      $ref: "#/components/schemas/Vertex"
     minItems: 3
   apertures:
-    description: List of apertures based on WWR for each wall.
-    type: array
-    items:
-      $ref: "#/components/schemas/ApertureWWR"
+    oneOf:
+      - $ref: "#/components/schemas/Aperture"
+      - $ref: "#/components/schemas/Apertures"
   extrusion:
     type: number
     minimum: 0

@@ -9,7 +9,8 @@ required:
 properties:
   type:
     type: string
-    enum: ["ApertureWWR"]
+    enum:
+      - ApertureWWR
   wwr:
     type: number
     minimum: 0

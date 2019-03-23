@@ -1,0 +1,16 @@
+description: Status for a single simulation.
+type: object
+readOnly: true
+properties:
+  status:
+    type: string
+    enum:
+      - Created
+      - Started
+      - Canceled
+      - Failed
+      - Succeeded
+  history:
+    type: array
+    items:
+      $ref: "#/components/schemas/SimulationEvent"

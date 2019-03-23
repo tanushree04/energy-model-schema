@@ -2,15 +2,11 @@ type: object
 description: A single planar Static Face in Model
 required:
   - vertices
-  - is_aperture
 properties:
-  type:
-    type: string
-    enum: ["ModelFaceBase"]  
+  id:
+    $ref: "#/components/schemas/UUID"
   name:
-    description: Optional name for face.
-    type: string
-    pattern: "^[.A-Za-z0-9_-]*$"
+    $ref: "#/components/schemas/ValidString"
   # face geometry 
   vertices:
     description: |
@@ -20,36 +16,48 @@ properties:
     items:
       type: integer
     minItems: 3
-    example: [0, 10, 5, 3]  
+    example: [0, 10, 5, 3]
   # face attributes
   face_type:
     description: |
-      Surface type. 0 = Wall, 1 = RoofCeiling, 2 = Floor, 3 = AirWall
-    type: integer
-    minimum: 0
-    maximum: 3
+      Face type. `Wall`, `RoofCeiling`, `Floor`, `AirWall`. The type will be assigned
+      based on face normal direction if not provided. For `AirWall`s you must set the
+      type manually. For `window` see `ModelAperture`.
+    type: string
+    enum:
+      - Wall
+      - RoofCeiling
+      - Floor
+      - AirWall
   parent:
     description: id of parent face or parent zone.
-    type: string
-    format: uuid
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      id:
+        $ref: "#/components/schemas/UUID"
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+         - zone
+         - face
   rad_modifier:
     description: |
-      Index of radiance modifier in radiance_modifiers. This modifier will be used as
+      UUID of radiance modifier in radiance_modifiers. This modifier will be used as
       default material for this face. See rad_modifier_direct for optional modifier for
       direct studies. If empty the modifier will be assigned based on face type.
-    type: integer
+    type: string
+    format: uuid
   rad_modifier_dir:
-    description: Index of radiance modifier for direct sunlight calculation in
-      model.rad_modifiers. Default is blacked rad_modifier.
-    type: integer
+    description:  UUID of radiance modifier in radiance_modifiers. This modifier will be
+      used for direct sunlight calculations. Default is blacked rad_modifier.
+    type: string
+    format: uuid
   ep_construction:
-    description: Index of energy construction in model.ep_constructions.
-    type: integer
-  is_aperture:
-    description: |
-      A boolean that indicates if this Face is an aperture. An
-      aperture can see the source of light (sky or sun) directly.
-      For interior windows this value will be False. Non-aperture openings won't be
-      considered as a separate source of light in calculation and will be treated
-      as go-through windows.
-    type: boolean
+    description: UUID of energy construction in model.ep_constructions.
+    type: string
+    format: uuid

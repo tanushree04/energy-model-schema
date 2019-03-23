@@ -1,4 +1,4 @@
-description:
+description: |
   A single sensor. The first 3 values indicate the locaion and
   the second 3 valuse indicate the direction of the sensor.
 type: array

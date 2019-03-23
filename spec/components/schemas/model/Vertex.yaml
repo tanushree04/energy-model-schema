@@ -1,4 +1,4 @@
-description: A single vertice as x, y, z.
+description: A single vertex as x, y, z.
 type: array
 items:
   type: number

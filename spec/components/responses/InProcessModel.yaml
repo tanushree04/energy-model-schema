@@ -1,0 +1,10 @@
+description: Processing
+headers:
+  Retry-After:
+    schema:
+      type: integer
+      default: 60
+content:
+  application/json:
+    schema:
+      $ref: "#/components/schemas/InProcessModel"
