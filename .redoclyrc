@@ -1,7 +1,7 @@
 apiTitle: pollination
 splitSpec: true
 codeSamples: true
-swaggerUI: false
+swaggerUI: true
 travis: true
-repo: pollination/api
+repo: ladybug-tools-in2/energy-model-schema
 oasVersion: 3.0.0

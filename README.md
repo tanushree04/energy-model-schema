@@ -1,10 +1,12 @@
-# pollination OpenAPI Specification
-[![Build Status](https://travis-ci.org/pollination/api.svg?branch=master)](https://travis-ci.org/pollination/api)
+# Pollination OpenAPI Specification
+[![Build Status](https://travis-ci.org/ladybug-tools-in2/energy-model-schema.svg?branch=master)](https://travis-ci.org/ladybug-tools-in2/energy-model-schema)
+
+## Energy Model Schema
 
 ## Links
 
-- [Reference Documentation (ReDoc)](https://pollination.github.io/api/)
-- OpenAPI Raw Files: [JSON](https://pollination.github.io/api/openapi.json) [YAML](https://pollination.github.io/api/openapi.yaml)
+- [Reference Documentation (ReDoc)](https://ladybug-tools-in2.github.io/energy-model-schema/)
+- OpenAPI Raw Files: [JSON](https://ladybug-tools-in2.github.io/energy-model-schema/openapi.json) [YAML](ladybug-tools-in2.github.io/energy-model-schema/openapi.yaml)
 
 ## Working on specification
 ### Install
@@ -24,4 +26,4 @@ Bundles the spec and prepares web_deploy folder with static assets.
 Validates the spec.
 
 #### `npm run gh-pages`
-Deploys docs to GitHub Pages. You don't need to run this manually thanks to [Travis CI](https://travis-ci.org/pollination/api).
+Deploys docs to GitHub Pages. You don't need to run this manually thanks to [Travis CI](https://travis-ci.org/ladybug-tools-in2/energy-model-schema).
